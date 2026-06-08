@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "DM Serif Display", serif;
+  --font-sans: "Outfit", sans-serif;
+  --font-mono: "DM Mono", monospace;
+
+  --color-paper: #faf9f6;
+  --color-paper-2: #f2f0eb;
+  --color-paper-3: #e8e4dc;
+  --color-ink: #0f0e0c;
+  --color-ink-2: #3a3834;
+  --color-ink-3: #6b6760;
+  --color-ink-4: #9c9890;
+  --color-brand-accent: #c8501a;
+  --color-brand-accent-2: #e8763a;
+  --color-brand-accent-pale: #fdf0ea;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+  }
+}
