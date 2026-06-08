@@ -1,11 +1,12 @@
 import { Router } from "express";
-import { successResponse } from "../utils/apiResponse.js";
+import { register, login, getMe } from "../controllers/auth.controller.js";
+import { validateRegister, validateLogin } from "../validators/auth.validator.js";
+import { authMiddleware } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
-// Placeholder route to be expanded in Sprint 1 Task 2
-router.post("/login", (req, res) => {
-  return successResponse(res, null, "Auth login placeholder (Sprint 1 Task 2)");
-});
+router.post("/register", validateRegister, register);
+router.post("/login", validateLogin, login);
+router.get("/me", authMiddleware, getMe);
 
 export default router;
