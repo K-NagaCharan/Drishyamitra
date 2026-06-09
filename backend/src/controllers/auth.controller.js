@@ -31,7 +31,7 @@ export const register = asyncHandler(async (req, res) => {
   await user.save();
 
   // Issue token
-  const token = generateToken(user._id);
+  const token = generateToken(user._id, user.username);
 
   return res.status(201).json({
     success: true,
@@ -65,7 +65,7 @@ export const login = asyncHandler(async (req, res) => {
     return errorResponse(res, 401, "Invalid email or password");
   }
 
-  const token = generateToken(user._id);
+  const token = generateToken(user._id, user.username);
 
   return successResponse(
     res,

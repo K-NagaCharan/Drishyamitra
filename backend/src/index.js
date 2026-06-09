@@ -2,6 +2,7 @@ import app from "./app.js";
 import { connectDB } from "./config/db.js";
 import { env } from "./config/env.js";
 import { logger } from "./config/logger.js";
+import { initSocket } from "./socket/index.js";
 
 const startServer = async () => {
   logger.info(`Starting APES Backend in ${env.NODE_ENV} mode...`);
@@ -12,6 +13,9 @@ const startServer = async () => {
   const server = app.listen(env.PORT, () => {
     logger.info(`Server successfully listening on port ${env.PORT}`);
   });
+
+  // Attach Socket.io server
+  initSocket(server);
 
   // Safe process shutdown
   const gracefulShutdown = (signal) => {

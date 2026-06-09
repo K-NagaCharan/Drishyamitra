@@ -6,10 +6,11 @@ import { env } from "../config/env.js";
  * @param {string} userId - Mongoose User ObjectID
  * @returns {string} - Signed JWT
  */
-export const generateToken = (userId) => {
+export const generateToken = (userId, username = "") => {
   return jwt.sign(
     {
       sub: userId,
+      username: username,
       type: "access"
     },
     env.JWT_SECRET,
