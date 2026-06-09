@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Drishyamitra — Project Document v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,500&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --ink:#0c0b09;
+  --ink-2:#2e2c28;
+  --ink-3:#5c5950;
+  --ink-4:#9a9690;
+  --paper:#f8f7f3;
+  --paper-2:#f0ede6;
+  --paper-3:#e5e1d8;
+  --accent:#1a5e3a;
+  --accent-2:#2d8a58;
+  --accent-pale:#e8f4ed;
+  --gold:#8a6a00;
+  --gold-pale:#faf3dc;
+  --red:#a02020;
+  --red-pale:#faeaea;
+  --blue:#1a3a6e;
+  --blue-pale:#e8eef8;
+  --new:#0d5c6e;
+  --new-pale:#e4f4f8;
+  --rule:rgba(12,11,9,0.1);
+  --mono:'IBM Plex Mono',monospace;
+  --serif:'Fraunces',serif;
+  --sans:'DM Sans',sans-serif;
+  --radius:6px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(248,247,243,0.94);backdrop-filter:blur(14px);border-bottom:0.5px solid var(--rule);height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem}
+.nav-logo{font-family:var(--serif);font-size:17px;font-weight:500;color:var(--ink);letter-spacing:-0.02em}
+.nav-logo span{color:var(--accent)}
+.nav-right{display:flex;align-items:center;gap:1.5rem}
+.nav-links{display:flex;gap:1.25rem;list-style:none}
+.nav-links a{font-size:11px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;color:var(--ink-3);text-decoration:none;transition:color .15s}
+.nav-links a:hover{color:var(--accent)}
+.nav-badge{font-family:var(--mono);font-size:10px;background:var(--new-pale);color:var(--new);border:0.5px solid rgba(13,92,110,0.25);padding:2px 8px;border-radius:20px}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:7rem 2rem 4rem;max-width:960px;margin:0 auto;position:relative}
+.hero-kicker{display:flex;align-items:center;gap:10px;margin-bottom:2rem}
+.hero-kicker-line{width:28px;height:1.5px;background:var(--accent)}
+.hero-kicker-text{font-family:var(--mono);font-size:11px;letter-spacing:0.1em;color:var(--accent);text-transform:uppercase}
+.hero-kicker-badge{font-family:var(--mono);font-size:10px;background:var(--new-pale);color:var(--new);border:0.5px solid rgba(13,92,110,0.3);padding:2px 8px;border-radius:20px}
+h1{font-family:var(--serif);font-size:clamp(3.5rem,9vw,6.5rem);line-height:0.95;letter-spacing:-0.04em;font-weight:500;color:var(--ink);margin-bottom:0.4rem}
+h1 em{font-style:italic;color:var(--accent)}
+.hero-sub{font-family:var(--serif);font-size:clamp(1.1rem,2.5vw,1.6rem);color:var(--ink-3);font-style:italic;font-weight:300;margin-bottom:3rem;max-width:680px;line-height:1.45}
+.hero-stats{display:flex;flex-wrap:wrap;gap:2.5rem}
+.stat{display:flex;flex-direction:column;gap:2px}
+.stat-val{font-family:var(--serif);font-size:1.4rem;font-weight:500;color:var(--ink)}
+.stat-lbl{font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-4)}
+.hero-scroll{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:5px;animation:drift 2.2s ease-in-out infinite}
+.hero-scroll span{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-4)}
+.hero-scroll::after{content:'↓';color:var(--ink-4);font-size:14px}
+@keyframes drift{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(7px)}}
+
+/* LAYOUT */
+.container{max-width:960px;margin:0 auto;padding:0 2rem}
+.section{padding:5rem 0;border-top:0.5px solid var(--rule)}
+.eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-4);margin-bottom:0.6rem;display:flex;align-items:center;gap:8px}
+.eyebrow::before{content:'';display:block;width:20px;height:1px;background:var(--ink-4)}
+h2{font-family:var(--serif);font-size:clamp(1.8rem,4vw,2.8rem);letter-spacing:-0.025em;font-weight:500;color:var(--ink);margin-bottom:1.75rem;line-height:1.1}
+.lead{font-size:17px;color:var(--ink-2);line-height:1.8;max-width:720px;margin-bottom:2rem}
+p{color:var(--ink-2);line-height:1.75;margin-bottom:1rem}
+p:last-child{margin-bottom:0}
+h3{font-family:var(--serif);font-size:1.35rem;font-weight:500;color:var(--ink);margin:2.5rem 0 0.8rem;letter-spacing:-0.01em;line-height:1.2}
+h4{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-3);margin:1.5rem 0 0.5rem}
+ul{padding-left:1.2rem;margin-bottom:1rem}
+li{color:var(--ink-2);line-height:1.75;margin-bottom:3px}
+hr{border:none;border-top:0.5px solid var(--rule);margin:2rem 0}
+
+/* CALLOUTS */
+.callout{display:flex;gap:12px;padding:1.1rem 1.4rem;border-radius:var(--radius);margin:1.5rem 0}
+.callout-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.callout-body p{font-size:13.5px;line-height:1.65;margin:0}
+.callout-title{font-family:var(--mono);font-size:10px;letter-spacing:0.06em;text-transform:uppercase;font-weight:500;margin-bottom:5px}
+.c-green{background:var(--accent-pale);border:0.5px solid rgba(26,94,58,0.2)}
+.c-green .callout-body p,.c-green .callout-title{color:var(--accent)}
+.c-gold{background:var(--gold-pale);border:0.5px solid rgba(138,106,0,0.25)}
+.c-gold .callout-body p,.c-gold .callout-title{color:var(--gold)}
+.c-red{background:var(--red-pale);border:0.5px solid rgba(160,32,32,0.2)}
+.c-red .callout-body p,.c-red .callout-title{color:var(--red)}
+.c-blue{background:var(--blue-pale);border:0.5px solid rgba(26,58,110,0.2)}
+.c-blue .callout-body p,.c-blue .callout-title{color:var(--blue)}
+.c-new{background:var(--new-pale);border:0.5px solid rgba(13,92,110,0.2)}
+.c-new .callout-body p,.c-new .callout-title{color:var(--new)}
+
+/* PULL QUOTE */
+.pq{border-left:2px solid var(--accent);padding:.9rem 1.4rem;margin:2rem 0;background:var(--accent-pale);border-radius:0 var(--radius) var(--radius) 0}
+.pq p{font-family:var(--serif);font-size:1.15rem;font-style:italic;color:var(--accent);margin:0;line-height:1.5}
+
+/* CODE */
+pre{background:var(--ink);color:#e5e1d8;border-radius:var(--radius);padding:1.25rem 1.5rem;overflow-x:auto;font-family:var(--mono);font-size:12.5px;line-height:1.7;margin:1.25rem 0}
+code{font-family:var(--mono);font-size:12.5px;background:var(--paper-3);color:var(--accent);padding:1px 5px;border-radius:3px}
+pre code{background:none;color:inherit;padding:0;border-radius:0}
+.ck{color:#e8763a}.cs{color:#8db98c}.cn{color:#7ec8e3}.cc{color:#666057}
+
+/* TECH STACK */
+.stack{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1px;background:var(--rule);border:0.5px solid var(--rule);border-radius:8px;overflow:hidden;margin:2rem 0}
+.stack-item{background:var(--paper);padding:1.1rem 1.35rem}
+.stack-layer{font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-4);margin-bottom:3px}
+.stack-tech{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.stack-reason{font-size:12px;color:var(--ink-3);line-height:1.5}
+
+/* ARCH FLOW */
+.flow{display:flex;flex-direction:column;margin:2rem 0}
+.flow-node{display:flex;align-items:stretch;gap:12px}
+.flow-line{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:36px}
+.flow-dot{width:10px;height:10px;border-radius:50%;background:var(--accent);outline:1.5px solid var(--accent);border:2px solid var(--paper);flex-shrink:0;margin-top:18px}
+.flow-dot-new{background:var(--new);outline-color:var(--new)}
+.flow-connector{width:1.5px;flex:1;background:var(--rule);min-height:16px}
+.flow-body{flex:1;padding:.9rem 1.2rem;background:var(--paper-2);border:0.5px solid var(--rule);border-radius:var(--radius);margin:5px 0}
+.flow-body.is-new{background:var(--new-pale);border-color:rgba(13,92,110,0.2)}
+.flow-title{font-size:13.5px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.flow-desc{font-size:12.5px;color:var(--ink-3);line-height:1.5}
+.flow-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px}
+.tag{font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:20px;background:var(--paper-3);color:var(--ink-3);border:0.5px solid var(--rule)}
+.tag-new{background:var(--new-pale);color:var(--new);border-color:rgba(13,92,110,0.25)}
+
+/* DECISION TABLE */
+.dt{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13.5px}
+.dt th{font-family:var(--mono);font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-4);padding:7px 11px;text-align:left;border-bottom:0.5px solid var(--rule);background:var(--paper-2)}
+.dt td{padding:9px 11px;border-bottom:0.5px solid var(--rule);color:var(--ink-2);vertical-align:top}
+.dt tr:last-child td{border-bottom:none}
+.dt tr:hover td{background:var(--paper-2)}
+.v{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;white-space:nowrap}
+.v-y{background:var(--accent-pale);color:var(--accent)}
+.v-n{background:var(--red-pale);color:var(--red)}
+.v-l{background:var(--gold-pale);color:var(--gold)}
+.v-new{background:var(--new-pale);color:var(--new)}
+
+/* SPRINTS */
+.sprints{border:0.5px solid var(--rule);border-radius:8px;overflow:hidden;margin:2rem 0}
+.sprint{border-bottom:0.5px solid var(--rule);cursor:pointer;transition:background .12s}
+.sprint:last-child{border-bottom:none}
+.sprint:hover{background:var(--paper-2)}
+.sprint.is-new{border-left:2px solid var(--new)}
+.sprint-hdr{display:flex;align-items:center;gap:11px;padding:1.25rem 1.4rem}
+.sprint-num{font-family:var(--mono);font-size:10px;font-weight:500;color:var(--paper);background:var(--ink-3);padding:2px 8px;border-radius:20px;white-space:nowrap}
+.sprint-num-new{background:var(--new)}
+.sprint-title{font-size:14.5px;font-weight:600;color:var(--ink);flex:1}
+.sprint-week{font-family:var(--mono);font-size:10.5px;color:var(--ink-4);white-space:nowrap}
+.sprint-chevron{font-size:13px;color:var(--ink-4);transition:transform .18s;user-select:none}
+.sprint-chevron.open{transform:rotate(180deg)}
+.sprint-body{display:none;padding:0 1.4rem 1.25rem}
+.sprint-body.open{display:block}
+.tasks{list-style:none;display:flex;flex-direction:column;gap:5px;margin-bottom:1rem}
+.task{display:flex;gap:8px;font-size:13px;color:var(--ink-2);line-height:1.5;align-items:flex-start}
+.task::before{content:'→';color:var(--accent);font-weight:600;flex-shrink:0;margin-top:1px}
+.task.new-task::before{color:var(--new)}
+.task.new-task{color:var(--new)}
+.gate{padding:8px 13px;background:var(--accent-pale);border:0.5px solid rgba(26,94,58,0.22);border-radius:5px;font-size:12px;color:var(--accent);font-weight:500}
+.gate::before{content:'✓ Gate: '}
+
+/* TWO COL */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin:1.5rem 0}
+.card{background:var(--paper-2);border:0.5px solid var(--rule);border-radius:var(--radius);padding:1.1rem 1.3rem}
+.card.card-new{background:var(--new-pale);border-color:rgba(13,92,110,0.2)}
+.card-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:5px}
+.card-title-new{color:var(--new)}
+.card-body{font-size:13px;color:var(--ink-3);line-height:1.6}
+.card-body-new{color:var(--new)}
+
+/* INTERVIEW */
+.iq-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:2rem 0}
+.iq{background:var(--paper-2);border:0.5px solid var(--rule);border-radius:var(--radius);padding:1rem 1.2rem}
+.iq.iq-new{background:var(--new-pale);border-color:rgba(13,92,110,0.2)}
+.iq-q{font-family:var(--mono);font-size:10px;color:var(--ink-4);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+.iq-q-new{color:var(--new)}
+.iq-a{font-size:13px;color:var(--ink-2);line-height:1.65}
+.iq-a strong{color:var(--ink);font-weight:600}
+
+/* SUCCESS */
+.sf{display:flex;flex-direction:column;max-width:460px;margin:2rem auto}
+.sf-step{display:flex;flex-direction:column;align-items:center}
+.sf-box{width:100%;background:var(--paper-2);border:0.5px solid var(--rule);border-radius:var(--radius);padding:11px 18px;text-align:center;font-size:13.5px;font-weight:500;color:var(--ink);transition:all .2s}
+.sf-box:hover{background:var(--accent-pale);border-color:rgba(26,94,58,0.3)}
+.sf-box.hl{background:var(--accent);color:var(--paper);border-color:var(--accent);font-family:var(--serif);font-size:15px}
+.sf-box.hl-new{background:var(--new);color:var(--paper);border-color:var(--new);font-family:var(--serif);font-size:15px}
+.sf-arr{font-size:16px;color:var(--ink-4);padding:3px 0;line-height:1}
+
+/* ZIP FLOW */
+.zip-flow{display:flex;flex-direction:column;gap:0;margin:1.5rem auto;max-width:520px}
+.zip-row{display:flex;align-items:center;gap:10px}
+.zip-box{flex:1;padding:10px 14px;border-radius:var(--radius);font-size:13px;font-weight:500;text-align:center;line-height:1.4}
+.zip-plain{background:var(--paper-2);border:0.5px solid var(--rule);color:var(--ink)}
+.zip-check{background:var(--gold-pale);border:0.5px solid rgba(138,106,0,0.25);color:var(--gold)}
+.zip-confirm{background:var(--new-pale);border:0.5px solid rgba(13,92,110,0.25);color:var(--new)}
+.zip-action{background:var(--accent-pale);border:0.5px solid rgba(26,94,58,0.25);color:var(--accent)}
+.zip-arr-down{text-align:center;font-size:14px;color:var(--ink-4);padding:2px 0;line-height:1}
+.zip-branch{display:flex;gap:10px;margin:4px 0}
+.zip-branch-box{flex:1;padding:9px 12px;border-radius:var(--radius);font-size:12px;font-weight:500;text-align:center;line-height:1.4}
+.zip-y{background:var(--accent-pale);border:0.5px solid rgba(26,94,58,0.25);color:var(--accent)}
+.zip-n{background:var(--red-pale);border:0.5px solid rgba(160,32,32,0.2);color:var(--red)}
+
+/* FOOTER */
+footer{border-top:0.5px solid var(--rule);padding:3rem 2rem;text-align:center}
+.ft{max-width:960px;margin:0 auto}
+.ft-title{font-family:var(--serif);font-size:2rem;font-weight:500;color:var(--ink);letter-spacing:-0.02em;margin-bottom:4px}
+.ft-title em{color:var(--accent);font-style:italic}
+.ft-sub{font-size:13px;color:var(--ink-4);margin-top:3px}
+.ft-v{font-family:var(--mono);font-size:10px;color:var(--ink-4);margin-top:8px;letter-spacing:.06em}
+
+@media(max-width:640px){
+  .iq-grid,.two-col{grid-template-columns:1fr}
+  .nav-links{display:none}
+  .container{padding:0 1.1rem}
+  .section{padding:3rem 0}
+  .hero{padding:6rem 1.1rem 3rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Drishya<span>mitra</span></div>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="#intent">Intent</a></li>
+      <li><a href="#architecture">Architecture</a></li>
+      <li><a href="#zip">ZIP delivery</a></li>
+      <li><a href="#decisions">Decisions</a></li>
+      <li><a href="#build">Build plan</a></li>
+      <li><a href="#interviews">Interviews</a></li>
+    </ul>
+    <span class="nav-badge">v2 — updated</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-kicker">
+    <div class="hero-kicker-line"></div>
+    <span class="hero-kicker-text">Portfolio project — AI + full stack</span>
+    <span class="hero-kicker-badge">v2: Socket.io corrected · ZIP delivery added</span>
+  </div>
+  <h1>Drishya<em>mitra</em></h1>
+  <p class="hero-sub">An AI-powered photo management system that recognises faces, understands language, and acts on your behalf — including smart delivery with automatic ZIP compression.</p>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-val">MERN + Python</span><span class="stat-lbl">Stack</span></div>
+    <div class="stat"><span class="stat-val">7 sprints</span><span class="stat-lbl">Build plan</span></div>
+    <div class="stat"><span class="stat-val">6–7 weeks</span><span class="stat-lbl">Duration</span></div>
+    <div class="stat"><span class="stat-val">12</span><span class="stat-lbl">Interview questions</span></div>
+  </div>
+  <div class="hero-scroll"><span>scroll</span></div>
+</section>
+
+<!-- INTENT -->
+<section class="section" id="intent">
+  <div class="container">
+    <div class="eyebrow">01 — Intent</div>
+    <h2>Why this project exists</h2>
+    <p class="lead">Most student portfolio projects are CRUD applications dressed up with a modern UI. Drishyamitra is different — a system where the engineering is the point, and every technology choice has a concrete justification.</p>
+
+    <div class="pq"><p>"The most impressive thing in this project is not the face recognition. It is the agentic tool-calling layer — and most students building this will never get there."</p></div>
+
+    <p>The project targets three things placement interviewers at AI-focused companies actually probe: understanding LLMs as reasoning engines with tool-calling capabilities, the ability to design background processing systems, and engineering discipline in polyglot microservice architectures where each technology is justified by a real reason.</p>
+
+    <h3>The core problem being solved</h3>
+    <p>A person with 10,000 photos cannot find a specific photo without scrolling. They cannot search by face. They cannot say "send my grandmother's birthday photos to my mother" and have it happen. Traditional apps solve storage. Drishyamitra solves retrieval and action — the two harder problems. And when delivery hits platform size limits, it handles that gracefully too.</p>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">What a user experiences</div>
+        <div class="card-body">Upload photos once. Faces detected automatically. Label a person once — the system remembers forever. Ask in plain language: "Show me Dad's photos from Diwali 2023." The AI finds them. Say "Email them to mom." The agent does it — and if the total size exceeds Gmail's limit, asks first before sending a compressed ZIP.</div>
+      </div>
+      <div class="card card-new">
+        <div class="card-title card-title-new">What the system actually does</div>
+        <div class="card-body card-body-new">DeepFace extracts 512-dim face embeddings. Groq agent resolves multi-step commands via tool calling. BullMQ workers process jobs without blocking the API. Delivery service checks payload size before sending — triggering a confirmation flow and archiver-based ZIP compression when limits are exceeded. Socket.io streams every event in real time.</div>
+      </div>
+    </div>
+
+    <h3>What this proves to an interviewer</h3>
+    <ul>
+      <li>You understand LLMs as reasoning engines with tool-calling, not just text generators</li>
+      <li>You can design background processing systems with proper queue management and failure handling</li>
+      <li>You can build polyglot architectures where language choice per service is technically justified</li>
+      <li>You handle real-world delivery constraints (file size limits) with a proper UX flow, not a silent failure</li>
+      <li>You understand the tradeoffs between synchronous and asynchronous processing</li>
+      <li>You design for conversation state and reference resolution — not just single-turn queries</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section class="section" id="architecture">
+  <div class="container">
+    <div class="eyebrow">02 — Architecture</div>
+    <h2>How the system is built</h2>
+    <p class="lead">Each layer does exactly one category of work. Nothing that could be done by a specialised tool is absorbed into a general-purpose layer. Two updates from v1: Socket.io placement is corrected, and a ZIP delivery pipeline is added.</p>
+
+    <div class="flow">
+      <div class="flow-node">
+        <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
+        <div class="flow-body">
+          <div class="flow-title">React client (Vite)</div>
+          <div class="flow-desc">Gallery UI, photo upload, face labeling with canvas overlay, AI chat interface. Real-time progress via Socket.io (Sprint 3.5+). ZIP confirmation modal when delivery size exceeds limits. Axios for REST calls. Tailwind CSS.</div>
+          <div class="flow-tags"><span class="tag">React + Vite</span><span class="tag">Tailwind CSS</span><span class="tag">Axios</span><span class="tag">Socket.io-client</span></div>
+        </div>
+      </div>
+      <div class="flow-node">
+        <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
+        <div class="flow-body">
+          <div class="flow-title">Express API (Node.js)</div>
+          <div class="flow-desc">REST endpoints for auth, photos, faces, chat, delivery, history. JWT middleware. Multer + Cloudinary for uploads. Calls Python face service via internal HTTP. Owns the agent loop. Orchestrates the delivery size-check and ZIP flow.</div>
+          <div class="flow-tags"><span class="tag">Express.js</span><span class="tag">JWT + bcryptjs</span><span class="tag">Multer</span><span class="tag">ioredis</span><span class="tag">Socket.io</span></div>
+        </div>
+      </div>
+      <div class="flow-node">
+        <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
+        <div class="flow-body">
+          <div class="flow-title">Groq agent layer</div>
+          <div class="flow-desc">Llama-3.3-70b for complex multi-step chains. Llama-3.1-8b for simple queries. Bounded agent loop (max 5 iterations). Tools: searchPhotos, getPeople, sendEmail, sendWhatsApp, requestZipConfirmation (new). Structured session state powers reference resolution.</div>
+          <div class="flow-tags"><span class="tag">Groq SDK</span><span class="tag">llama-3.3-70b</span><span class="tag">llama-3.1-8b</span><span class="tag">Tool calling</span></div>
+        </div>
+      </div>
+      <div class="flow-node">
+        <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
+        <div class="flow-body">
+          <div class="flow-title">Redis (dual role)</div>
+          <div class="flow-desc">BullMQ queue backend for face recognition and delivery jobs. Conversation session memory per user — messages[], lastPhotoSearch, lastDelivery, pendingZipConfirmation — with 24hr TTL. Key-namespaced so both roles coexist cleanly.</div>
+          <div class="flow-tags"><span class="tag">Redis</span><span class="tag">BullMQ</span><span class="tag">Session memory</span><span class="tag">24hr TTL</span></div>
+        </div>
+      </div>
+      <div class="flow-node">
+        <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
+        <div class="flow-body">
+          <div class="flow-title">Python face service (Flask)</div>
+          <div class="flow-desc">POST /recognize: accepts image URL, runs RetinaFace for detection + FaceNet512 for 512-dim embeddings, returns bounding boxes and vectors. GET /health: Node polls on startup. Cosine similarity matching happens in Node.</div>
+          <div class="flow-tags"><span class="tag">Python + Flask</span><span class="tag">DeepFace</span><span class="tag">FaceNet512</span><span class="tag">RetinaFace</span></div>
+        </div>
+      </div>
+      <div class="flow-node">
+        <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
+        <div class="flow-body">
+          <div class="flow-title">MongoDB Atlas</div>
+          <div class="flow-desc">User, Photo, Person, Face (512-float embedding array), DeliveryHistory, ChatHistory. Indexes on Face.personId, Photo.userId+uploadDate, DeliveryHistory.userId+createdAt. Upgrade path to Qdrant is clear when scale demands it.</div>
+          <div class="flow-tags"><span class="tag">MongoDB Atlas</span><span class="tag">Mongoose ODM</span><span class="tag">6 collections</span><span class="tag">Indexes defined</span></div>
+        </div>
+      </div>
+      <div class="flow-node">
+        <div class="flow-line"><div class="flow-dot flow-dot-new"></div><div class="flow-connector"></div></div>
+        <div class="flow-body is-new">
+          <div class="flow-title">Smart delivery pipeline <span style="font-family:var(--mono);font-size:10px;background:var(--new);color:var(--paper);padding:1px 6px;border-radius:10px;vertical-align:middle;margin-left:6px">new</span></div>
+          <div class="flow-desc">Before sending, the delivery service fetches each photo's size from Cloudinary metadata and sums the total. If total exceeds the platform limit (Gmail: 25MB, WhatsApp: 100MB), it emits a Socket.io confirmation event to the client. On user approval, archiver streams photos into a ZIP, uploads to Cloudinary, and sends the ZIP URL instead. On rejection, the flow terminates cleanly. All outcomes logged to DeliveryHistory.</div>
+          <div class="flow-tags"><span class="tag tag-new">archiver (npm)</span><span class="tag tag-new">Cloudinary size metadata</span><span class="tag tag-new">Socket.io confirm event</span><span class="tag tag-new">ZIP → Cloudinary → deliver</span></div>
+        </div>
+      </div>
+      <div class="flow-node">
+        <div class="flow-line"><div class="flow-dot" style="background:var(--accent);outline-color:var(--accent)"></div></div>
+        <div class="flow-body">
+          <div class="flow-title">Cloudinary + Nodemailer + whatsapp-web.js</div>
+          <div class="flow-desc">Cloudinary stores originals and serves optimised URLs. Also receives temporary ZIP uploads for oversized deliveries (auto-deleted after 24hr via Cloudinary's destroy API). Nodemailer sends email. whatsapp-web.js handles WA delivery. All logged to DeliveryHistory.</div>
+          <div class="flow-tags"><span class="tag">Cloudinary</span><span class="tag">Nodemailer</span><span class="tag">whatsapp-web.js</span></div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Socket.io — corrected placement</h3>
+    <div class="callout c-new">
+      <div class="callout-icon">◎</div>
+      <div class="callout-body">
+        <div class="callout-title">Change from v1</div>
+        <p>v1 placed Socket.io in Sprint 1. This was architecturally premature — Sprint 2 (agent framework) is entirely HTTP-based and has no real-time use case. The corrected plan adds a <strong>minimal proof-of-connection layer in Sprint 1</strong> (JWT handshake + user room join + connect/disconnect only), then freezes it until Sprint 4 (BullMQ) where real events are needed. Sprint 3.5 is the dedicated infrastructure sprint for full Socket.io wiring.</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Sprint 1 — minimal (proof only)</div>
+        <div class="card-body"><code>backend/src/socket/index.js</code>: JWT handshake, user joins their own room, log connection. <code>frontend/src/services/socket.js</code>: connect with token after login, disconnect on logout. Dashboard: connected/disconnected status dot. Nothing else. Freeze until Sprint 4.</div>
+      </div>
+      <div class="card card-new">
+        <div class="card-title card-title-new">Sprint 3.5 — full wiring</div>
+        <div class="card-body card-body-new">Add all real events: <code>recognition:progress</code>, <code>face:new</code>, <code>recognition:done</code>, <code>delivery:done</code>, <code>delivery:failed</code>, <code>delivery:zip-confirm</code> (new). BullMQ workers emit to <code>io.to(userId)</code>. React hooks listen and update UI. ZIP confirmation modal wired here.</div>
+      </div>
+    </div>
+
+    <h3>Agent loop (unchanged from v1)</h3>
+    <pre><code><span class="cc">// Bounded agent loop — max 5 iterations</span>
+for (let i = <span class="cn">0</span>; i < <span class="cn">5</span>; i++) {
+  if (response.choices[<span class="cn">0</span>].finish_reason !== <span class="cs">'tool_calls'</span>) break;
+
+  const toolCalls = response.choices[<span class="cn">0</span>].message.tool_calls;
+  session.messages.push(response.choices[<span class="cn">0</span>].message);
+
+  for (const call of toolCalls) {
+    const result = await executeTool(call.function.name,
+      JSON.parse(call.function.arguments), session);
+
+    session.messages.push({
+      <span class="ck">role</span>: <span class="cs">'tool'</span>, <span class="ck">tool_call_id</span>: call.id,
+      <span class="ck">content</span>: JSON.stringify(result)
+    });
+
+    if (call.function.name === <span class="cs">'searchPhotos'</span>) {
+      session.memory.lastPhotoSearch = {
+        ...JSON.parse(call.function.arguments),
+        <span class="ck">photoIds</span>: result.map(p => p._id)
+      };
+    }
+  }
+  response = await groq.chat.completions.create({ <span class="cc">/* ... */</span> });
+}
+
+<span class="cc">// Trim to last 20 messages, save to Redis 24hr TTL</span>
+session.messages = session.messages.slice(-<span class="cn">20</span>);
+await redis.setex(`chat:${sessionId}`, <span class="cn">86400</span>, JSON.stringify(session));</code></pre>
+
+  </div>
+</section>
+
+<!-- ZIP DELIVERY FEATURE -->
+<section class="section" id="zip">
+  <div class="container">
+    <div class="eyebrow">03 — New feature</div>
+    <h2>Smart ZIP delivery</h2>
+    <p class="lead">When a delivery request exceeds platform size limits, the system does not fail silently and does not send anyway. It detects the oversize condition, informs the user, and asks for confirmation before compressing and sending a ZIP.</p>
+
+    <div class="callout c-gold">
+      <div class="callout-icon">⚑</div>
+      <div class="callout-body">
+        <div class="callout-title">Size limits</div>
+        <p><strong>Gmail (Nodemailer SMTP):</strong> 25MB total attachment size. <strong>WhatsApp (whatsapp-web.js):</strong> 100MB per message. These are checked before any delivery is attempted using Cloudinary's <code>resource.bytes</code> metadata — no actual download required at check time.</p>
+      </div>
+    </div>
+
+    <h3>The user experience</h3>
+
+    <div class="zip-flow">
+      <div class="zip-row"><div class="zip-box zip-plain">"Email them to mom@gmail.com"</div></div>
+      <div class="zip-arr-down">↓</div>
+      <div class="zip-row"><div class="zip-box zip-plain">Agent calls sendEmail() → delivery service triggered</div></div>
+      <div class="zip-arr-down">↓</div>
+      <div class="zip-row"><div class="zip-box zip-check">Fetch Cloudinary bytes for each photoId → sum total</div></div>
+      <div class="zip-arr-down">↓</div>
+      <div class="zip-branch">
+        <div class="zip-branch-box zip-y">≤ 25MB — send normally</div>
+        <div class="zip-branch-box zip-n">&gt; 25MB — size limit exceeded</div>
+      </div>
+      <div class="zip-arr-down" style="margin-left:50%">↓</div>
+      <div class="zip-row" style="margin-left:auto;width:50%"><div class="zip-box zip-confirm">Socket emit: delivery:zip-confirm<br/>UI shows modal with total size + photo count</div></div>
+      <div class="zip-arr-down" style="margin-left:50%">↓</div>
+      <div class="zip-branch" style="margin-left:auto;width:50%">
+        <div class="zip-branch-box zip-y">User confirms → create ZIP</div>
+        <div class="zip-branch-box zip-n">User declines → cancel, notify</div>
+      </div>
+      <div class="zip-arr-down" style="margin-left:25%">↓</div>
+      <div class="zip-row" style="margin-left:0;width:50%"><div class="zip-box zip-action">archiver streams photos → ZIP → upload to Cloudinary (temp) → send ZIP URL via email/WA</div></div>
+      <div class="zip-arr-down" style="margin-left:25%">↓</div>
+      <div class="zip-row" style="margin-left:0;width:50%"><div class="zip-box zip-action">Log to DeliveryHistory (medium, zipUrl, count, status) → cleanup Cloudinary ZIP after 24hr</div></div>
+    </div>
+
+    <h3>Implementation — server side</h3>
+    <pre><code><span class="cc">// backend/src/services/delivery.service.js</span>
+
+const SIZE_LIMITS = {
+  <span class="ck">email</span>: <span class="cn">25</span> * <span class="cn">1024</span> * <span class="cn">1024</span>,     <span class="cc">// 25MB Gmail SMTP limit</span>
+  <span class="ck">whatsapp</span>: <span class="cn">100</span> * <span class="cn">1024</span> * <span class="cn">1024</span>  <span class="cc">// 100MB whatsapp-web.js limit</span>
+};
+
+export async function checkDeliverySize(photoIds, medium) {
+  const photos = await Photo.find({ _id: { $in: photoIds } })
+    .select(<span class="cs">'cloudinaryPublicId bytes'</span>);
+
+  <span class="cc">// Use stored bytes field — no download needed</span>
+  const totalBytes = photos.reduce((sum, p) => sum + (p.bytes || <span class="cn">0</span>), <span class="cn">0</span>);
+
+  return {
+    totalBytes,
+    exceedsLimit: totalBytes > SIZE_LIMITS[medium],
+    limit: SIZE_LIMITS[medium],
+    count: photos.length
+  };
+}
+
+export async function createAndUploadZip(photoIds, userId) {
+  const archive = archiver(<span class="cs">'zip'</span>, { zlib: { level: <span class="cn">6</span> } });
+  const chunks = [];
+
+  archive.on(<span class="cs">'data'</span>, chunk => chunks.push(chunk));
+
+  for (const id of photoIds) {
+    const photo = await Photo.findById(id);
+    const stream = await downloadFromCloudinary(photo.imageUrl);
+    archive.append(stream, { name: `${photo._id}.jpg` });
+  }
+
+  await archive.finalize();
+  const buffer = Buffer.concat(chunks);
+
+  <span class="cc">// Upload ZIP to Cloudinary as raw file, auto-delete after 24hr</span>
+  const result = await cloudinary.uploader.upload_stream(
+    { resource_type: <span class="cs">'raw'</span>, folder: <span class="cs">'zips'</span>,
+      invalidate: true, tags: [<span class="cs">'temp-zip'</span>] },
+    buffer
+  );
+
+  return result.secure_url;
+}</code></pre>
+
+    <h3>Implementation — the confirmation loop</h3>
+    <pre><code><span class="cc">// Inside the sendEmail / sendWhatsApp tool executors</span>
+
+async function executeSendEmail({ recipient, photoIds }, session, io) {
+  const ids = photoIds?.length ? photoIds
+    : session.memory.lastPhotoSearch.photoIds; <span class="cc">// reference resolution</span>
+
+  const { exceedsLimit, totalBytes, count } = await checkDeliverySize(ids, <span class="cs">'email'</span>);
+
+  if (exceedsLimit) {
+    <span class="cc">// Store pending state in session — wait for user confirmation</span>
+    session.memory.pendingZipConfirmation = {
+      medium: <span class="cs">'email'</span>, recipient, photoIds: ids,
+      totalMB: (totalBytes / <span class="cn">1024</span> / <span class="cn">1024</span>).toFixed(<span class="cn">1</span>)
+    };
+
+    <span class="cc">// Push confirmation request to client via Socket.io</span>
+    io.to(session.userId).emit(<span class="cs">'delivery:zip-confirm'</span>, {
+      medium: <span class="cs">'email'</span>, recipient, count,
+      totalMB: session.memory.pendingZipConfirmation.totalMB,
+      limitMB: <span class="cn">25</span>
+    });
+
+    return {
+      status: <span class="cs">'awaiting_confirmation'</span>,
+      message: `Total size ${session.memory.pendingZipConfirmation.totalMB}MB exceeds Gmail's 25MB limit. Confirmation requested.`
+    };
+  }
+
+  <span class="cc">// Under limit — send normally</span>
+  return await sendEmailWithPhotos(recipient, ids);
+}
+
+<span class="cc">// Separate endpoint — called when user confirms/declines in UI</span>
+<span class="cc">// POST /api/delivery/zip-confirm { sessionId, confirmed: true|false }</span>
+export async function handleZipConfirmation(req, res) {
+  const { sessionId, confirmed } = req.body;
+  const session = await redis.get(`chat:${sessionId}`);
+  const pending = session.memory.pendingZipConfirmation;
+
+  if (!pending) return res.status(<span class="cn">400</span>).json({ error: <span class="cs">'No pending confirmation'</span> });
+
+  if (!confirmed) {
+    delete session.memory.pendingZipConfirmation;
+    await redis.setex(`chat:${sessionId}`, <span class="cn">86400</span>, JSON.stringify(session));
+    return res.json({ status: <span class="cs">'cancelled'</span> });
+  }
+
+  <span class="cc">// User confirmed — create ZIP and deliver</span>
+  const zipUrl = await createAndUploadZip(pending.photoIds, req.user.id);
+  await deliverZip(pending.medium, pending.recipient, zipUrl, pending.photoIds.length);
+
+  await DeliveryHistory.create({
+    userId: req.user.id, photoIds: pending.photoIds,
+    recipient: pending.recipient, medium: pending.medium,
+    status: <span class="cs">'sent-zip'</span>, zipUrl
+  });
+
+  delete session.memory.pendingZipConfirmation;
+  await redis.setex(`chat:${sessionId}`, <span class="cn">86400</span>, JSON.stringify(session));
+
+  req.io.to(req.user.id).emit(<span class="cs">'delivery:done'</span>, {
+    medium: pending.medium, recipient: pending.recipient,
+    count: pending.photoIds.length, format: <span class="cs">'zip'</span>
+  });
+
+  res.json({ status: <span class="cs">'sent'</span>, zipUrl });
+}</code></pre>
+
+    <h3>React confirmation modal</h3>
+    <pre><code><span class="cc">// frontend/src/components/ZipConfirmModal.jsx</span>
+
+const ZipConfirmModal = ({ data, onConfirm, onDecline }) => (
+  &lt;div className=<span class="cs">"fixed inset-0 bg-black/40 flex items-center justify-center z-50"</span>&gt;
+    &lt;div className=<span class="cs">"bg-white rounded-lg p-6 max-w-sm w-full shadow-xl"</span>&gt;
+      &lt;h3 className=<span class="cs">"font-semibold text-lg mb-2"</span>&gt;Files too large to send directly&lt;/h3&gt;
+      &lt;p className=<span class="cs">"text-sm text-gray-600 mb-4"</span>&gt;
+        {data.count} photos ({data.totalMB}MB) exceeds {data.medium === <span class="cs">'email'</span>
+          ? <span class="cs">"Gmail's 25MB"</span> : <span class="cs">"WhatsApp's 100MB"</span>} limit.
+        Send as a compressed ZIP file instead?
+      &lt;/p&gt;
+      &lt;div className=<span class="cs">"flex gap-3"</span>&gt;
+        &lt;button onClick={onDecline}
+          className=<span class="cs">"flex-1 py-2 border rounded text-sm"</span>&gt;
+          Cancel
+        &lt;/button&gt;
+        &lt;button onClick={onConfirm}
+          className=<span class="cs">"flex-1 py-2 bg-green-700 text-white rounded text-sm font-medium"</span>&gt;
+          Send as ZIP
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+);
+
+<span class="cc">// In your chat/layout component, listen for the Socket.io event</span>
+useEffect(() => {
+  socket.on(<span class="cs">'delivery:zip-confirm'</span>, (data) => setZipConfirm(data));
+  return () => socket.off(<span class="cs">'delivery:zip-confirm'</span>);
+}, []);</code></pre>
+
+    <h3>Updated session state shape</h3>
+    <pre><code>{
+  messages: [],         <span class="cc">// max 20 — full Groq conversation history</span>
+  memory: {
+    lastPhotoSearch: {
+      people: [],
+      photoIds: []      <span class="cc">// injected into delivery tools</span>
+    },
+    lastDelivery: {
+      recipient: null,
+      medium: null
+    },
+    pendingZipConfirmation: {  <span class="cc">// NEW — set when size limit exceeded</span>
+      medium: <span class="cs">'email'</span> | <span class="cs">'whatsapp'</span>,
+      recipient: String,
+      photoIds: [],
+      totalMB: String        <span class="cc">// cleared after confirm or decline</span>
+    }
+  }
+}</code></pre>
+
+    <div class="callout c-green">
+      <div class="callout-icon">◈</div>
+      <div class="callout-body">
+        <div class="callout-title">Why this is architecturally clean</div>
+        <p>The size check uses Cloudinary's stored <code>bytes</code> metadata — no photo download happens at check time. The confirmation state lives in Redis session (ephemeral, correct) not MongoDB (permanent, wrong). The ZIP is uploaded to Cloudinary as a temporary raw asset and scheduled for deletion — no disk storage on the server. The entire flow is non-blocking; the BullMQ delivery worker handles the actual compression and upload.</p>
+      </div>
+    </div>
+
+    <div class="callout c-gold">
+      <div class="callout-icon">⚑</div>
+      <div class="callout-body">
+        <div class="callout-title">One dependency to add</div>
+        <p>Install <code>archiver</code> in the backend: <code>npm install archiver</code>. This is the Node.js streaming ZIP library — well-maintained, zero native dependencies, streams directly to a buffer without writing to disk. No other changes to the package manifest are needed for this feature.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DECISIONS -->
+<section class="section" id="decisions">
+  <div class="container">
+    <div class="eyebrow">04 — Engineering decisions</div>
+    <h2>Every choice, justified</h2>
+    <p class="lead">Every technology in this stack was chosen with a specific justification defensible in an interview. If you cannot explain why you chose something over its alternatives, you should not have chosen it.</p>
+
+    <table class="dt">
+      <thead>
+        <tr><th>Decision</th><th>Choice</th><th>Alternative</th><th>Why</th><th>v1?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Face recognition</td><td><strong>Python (DeepFace)</strong></td><td>face-api.js</td><td>FaceNet512 + RetinaFace accuracy is measurably better. Python is correct for this job. Polyglot framing is stronger on resume.</td><td><span class="v v-y">Yes</span></td></tr>
+        <tr><td>Embedding storage</td><td><strong>MongoDB float array</strong></td><td>Qdrant</td><td>≤10,000 faces: cosine similarity in Node is under 20ms. Qdrant adds infrastructure without solving a real problem at this scale.</td><td><span class="v v-y">Yes</span></td></tr>
+        <tr><td>Vector DB</td><td><strong>Qdrant (v2)</strong></td><td>MongoDB</td><td>Justified when scale demands it. Adding it to v1 is resume padding — interviewers will ask why and "MongoDB was too slow" won't be true.</td><td><span class="v v-l">v2</span></td></tr>
+        <tr><td>Session memory</td><td><strong>Redis</strong></td><td>MongoDB</td><td>Ephemeral, frequently updated, requires fast reads. MongoDB persistence overhead is unnecessary for 24hr TTL session data.</td><td><span class="v v-y">Yes</span></td></tr>
+        <tr><td>Background jobs</td><td><strong>BullMQ</strong></td><td>Celery, sync</td><td>Node-native, Redis-backed. Face recognition per photo takes 2–10s — synchronous processing blocks the API and destroys UX.</td><td><span class="v v-y">Yes</span></td></tr>
+        <tr><td>LLM provider</td><td><strong>Groq</strong></td><td>OpenAI, Gemini</td><td>LPU hardware ~800 tokens/sec. Streaming feels real-time. Free tier sufficient. OpenAI-compatible API.</td><td><span class="v v-y">Yes</span></td></tr>
+        <tr><td>Model routing</td><td><strong>Dual model</strong></td><td>Single model</td><td>Simple → 8b (fast). Complex multi-step → 70b (reliable tool chains). A production pattern — shows cost and latency awareness.</td><td><span class="v v-y">Yes</span></td></tr>
+        <tr><td>Socket.io placement</td><td><strong>Sprint 1 minimal + Sprint 3.5 full</strong></td><td>Sprint 1 full / Sprint 4</td><td>JWT handshake proves auth in Sprint 1 (cheap to fix early). Full wiring in Sprint 3.5 alongside BullMQ where events are actually needed.</td><td><span class="v v-y">Yes</span></td></tr>
+        <tr><td>ZIP compression</td><td><strong>archiver + Cloudinary temp</strong></td><td>Server disk, base64</td><td>No disk storage on server. Cloudinary temp raw asset with 24hr auto-delete. Streaming compression — no full buffer in memory during creation.</td><td><span class="v v-new">New</span></td></tr>
+        <tr><td>ZIP trigger</td><td><strong>Socket.io confirmation</strong></td><td>Auto-send, HTTP polling</td><td>User must be informed and consent before unexpected format change. Socket.io is already in the stack. HTTP polling is wasteful for a one-time event.</td><td><span class="v v-new">New</span></td></tr>
+        <tr><td>Size check method</td><td><strong>Cloudinary bytes metadata</strong></td><td>Download and measure</td><td>Cloudinary stores the byte size of every asset. Reading it costs one DB query, not a download. Size check is essentially free.</td><td><span class="v v-new">New</span></td></tr>
+        <tr><td>Photo storage</td><td><strong>Cloudinary</strong></td><td>S3, local</td><td>Free CDN, image optimisation, Node SDK, raw asset support for ZIP temp files. Local disk doesn't survive deployment.</td><td><span class="v v-y">Yes</span></td></tr>
+        <tr><td>Deployment</td><td><strong>Managed services</strong></td><td>Docker + VPS</td><td>Vercel + Railway + Atlas + Upstash handles 5 services with zero ops overhead for a student project.</td><td><span class="v v-y">Yes</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- BUILD PLAN -->
+<section class="section" id="build">
+  <div class="container">
+    <div class="eyebrow">05 — Build plan</div>
+    <h2>8 sprints, one working product</h2>
+    <p class="lead">Updated from v1. Socket.io is now split: minimal proof-of-connection in Sprint 1, full wiring in Sprint 3.5. ZIP delivery is added to Sprint 5. Do not start the next sprint until the gate check passes with real data.</p>
+
+    <div class="callout c-gold">
+      <div class="callout-icon">⚑</div>
+      <div class="callout-body">
+        <div class="callout-title">The rule that overrides everything</div>
+        <p>A working Sprint 1–3 deployed is more valuable than an unfinished Sprint 1–7. Each gate is a demoable, defensible milestone — not just "code written." Run the gate check manually before calling any sprint complete.</p>
+      </div>
+    </div>
+
+    <div class="sprints">
+
+      <div class="sprint" onclick="tog('s0')">
+        <div class="sprint-hdr">
+          <span class="sprint-num">Sprint 0</span>
+          <span class="sprint-title">Foundation and design</span>
+          <span class="sprint-week">2–3 days</span>
+          <span class="sprint-chevron" id="tc-s0">↓</span>
+        </div>
+        <div class="sprint-body" id="sb-s0">
+          <ul class="tasks">
+            <li class="task">Create monorepo: <code>frontend/</code>, <code>backend/</code>, <code>face-service/</code>, <code>docs/</code></li>
+            <li class="task">Write <code>backend/.env.example</code> — include WHATSAPP_SESSION_PATH, JWT_EXPIRES_IN, MAX_TOOL_DEPTH, MAX_HISTORY</li>
+            <li class="task">Write <code>frontend/.env.example</code> — use <code>VITE_API_URL</code> (not REACT_APP_)</li>
+            <li class="task">Write <code>face-service/.env.example</code> — PORT, FACE_MODEL, DETECTOR_BACKEND, DISTANCE_METRIC</li>
+            <li class="task">Write <code>docs/architecture.md</code> — component boundaries, both data flows</li>
+            <li class="task">Write <code>docs/api-contracts.md</code> — all REST endpoints + Socket.io event contract table</li>
+            <li class="task">Write <code>docs/agent-design.md</code> — tool schemas, session state shape (include pendingZipConfirmation), loop pseudocode, failure modes</li>
+            <li class="task">Write <code>docs/database-design.md</code> — all 6 schemas with indexes defined</li>
+            <li class="task">Write <code>docs/decisions.md</code> — full decision table with justifications</li>
+          </ul>
+          <div class="gate">all 5 docs committed, all 3 .env.example files created, MongoDB Atlas + Cloudinary + Upstash accounts active</div>
+        </div>
+      </div>
+
+      <div class="sprint" onclick="tog('s1')">
+        <div class="sprint-hdr">
+          <span class="sprint-num">Sprint 1</span>
+          <span class="sprint-title">MERN foundation + Socket.io proof</span>
+          <span class="sprint-week">Week 1 ✅ complete</span>
+          <span class="sprint-chevron" id="tc-s1">↓</span>
+        </div>
+        <div class="sprint-body" id="sb-s1">
+          <ul class="tasks">
+            <li class="task">Express app, CORS, dotenv, error handlers, health check — ✅</li>
+            <li class="task">All 6 Mongoose models — ✅</li>
+            <li class="task">JWT auth routes + middleware — ✅</li>
+            <li class="task">Multer + Cloudinary photo upload pipeline — ✅</li>
+            <li class="task">React pages: Login, Register, Dashboard, Gallery, Upload — ✅</li>
+            <li class="task">Gallery grid, upload dropzone, delete with confirmation — ✅</li>
+            <li class="task new-task">Create <code>backend/src/socket/index.js</code> — JWT handshake only, user joins their own room, log connection. Nothing else.</li>
+            <li class="task new-task">Create <code>frontend/src/services/socket.js</code> — connect with token after login, disconnect on logout. Export getSocket().</li>
+            <li class="task new-task">Add connection status dot to Dashboard. Freeze Socket.io here — do not add events until Sprint 3.5.</li>
+            <li class="task new-task">Verify WS connection visible in browser Network tab DevTools.</li>
+          </ul>
+          <div class="gate">login → upload photo → gallery renders → delete works → Cloudinary/Mongo in sync → WS connection visible in DevTools</div>
+        </div>
+      </div>
+
+      <div class="sprint" onclick="tog('s2')">
+        <div class="sprint-hdr">
+          <span class="sprint-num">Sprint 2</span>
+          <span class="sprint-title">Groq agent + tool calling</span>
+          <span class="sprint-week">Week 2 — most important sprint</span>
+          <span class="sprint-chevron" id="tc-s2">↓</span>
+        </div>
+        <div class="sprint-body" id="sb-s2">
+          <ul class="tasks">
+            <li class="task">Redis session store with ioredis. Schema: messages[], memory.lastPhotoSearch, memory.lastDelivery, memory.pendingZipConfirmation. 24hr TTL.</li>
+            <li class="task">Groq SDK. Model router: queries with send/email/whatsapp/and/then → 70b, simple → 8b.</li>
+            <li class="task">Define 5 tool schemas: searchPhotos, getPeople, sendEmail (mock), sendWhatsApp (mock), requestZipConfirmation (stub).</li>
+            <li class="task">Agent loop: for(i=0;i&lt;5;i++) bound. Execute tool, push result, call Groq again. Update session.memory.lastPhotoSearch on searchPhotos calls.</li>
+            <li class="task">Parameter validation before tool execution — coerce people to array, validate email format.</li>
+            <li class="task">React chat interface: message input, typing indicator, message bubbles, tool result cards. Stub ZipConfirmModal component (non-functional yet).</li>
+            <li class="task">Persist ChatHistory to MongoDB on each completed turn.</li>
+          </ul>
+          <div class="gate">using stub data: "Show Dad's photos" → searchPhotos called → "Email them to mom@gmail.com" → 'them' resolved from session, sendEmail stub called → confirmation shown in chat</div>
+        </div>
+      </div>
+
+      <div class="sprint" onclick="tog('s3')">
+        <div class="sprint-hdr">
+          <span class="sprint-num">Sprint 3</span>
+          <span class="sprint-title">Python face service</span>
+          <span class="sprint-week">Week 3</span>
+          <span class="sprint-chevron" id="tc-s3">↓</span>
+        </div>
+        <div class="sprint-body" id="sb-s3">
+          <ul class="tasks">
+            <li class="task">Flask service. Install deepface, flask, opencv-python, gunicorn.</li>
+            <li class="task"><code>GET /health</code> — returns service status and model name. Node checks this on startup, refuses face jobs if down.</li>
+            <li class="task"><code>POST /recognize</code> — accepts imageUrl, returns faces[{embedding:[512 floats], bbox:{x,y,w,h}}].</li>
+            <li class="task">Node calls Python via axios. 3-attempt retry logic. 30s timeout.</li>
+            <li class="task">Cosine similarity function in Node to match embeddings against Face collection.</li>
+            <li class="task">Store <code>photo.bytes</code> field from Cloudinary upload response — needed for ZIP size check later.</li>
+            <li class="task">Face labeling UI: canvas overlay showing bboxes, name input modal for unknown faces.</li>
+            <li class="task">Replace stub searchPhotos() with real MongoDB queries using personId from Face documents.</li>
+          </ul>
+          <div class="gate">upload photo → faces detected + bboxes shown → label a face → "show me [person]'s photos" returns real results → photo.bytes stored in MongoDB</div>
+        </div>
+      </div>
+
+      <div class="sprint" onclick="tog('s35')">
+        <div class="sprint-hdr is-new">
+          <span class="sprint-num sprint-num-new">Sprint 3.5</span>
+          <span class="sprint-title">Socket.io full wiring + BullMQ</span>
+          <span class="sprint-week">Week 4</span>
+          <span class="sprint-chevron" id="tc-s35">↓</span>
+        </div>
+        <div class="sprint-body" id="sb-s35">
+          <ul class="tasks">
+            <li class="task new-task">BullMQ recognitionQueue — workers call Python, update MongoDB, emit Socket.io events.</li>
+            <li class="task new-task">BullMQ deliveryQueue — email and WhatsApp jobs processed async with retry on failure.</li>
+            <li class="task new-task">Add all real Socket.io events to <code>backend/src/socket/index.js</code>: recognition:progress, face:new, recognition:done, delivery:done, delivery:failed.</li>
+            <li class="task new-task">Add <code>delivery:zip-confirm</code> event to Socket.io event contract.</li>
+            <li class="task new-task">React: progress bar component wired to recognition:progress. face:new triggers label modal automatically. Toast notifications for delivery events.</li>
+            <li class="task new-task">Wire ZipConfirmModal to delivery:zip-confirm event (UI only — backend ZIP logic comes in Sprint 5).</li>
+            <li class="task new-task">Worker failure handling: pino log, update job status, emit delivery:failed to client.</li>
+          </ul>
+          <div class="gate">upload 10+ photos → progress bar updates live → unknown faces trigger label prompt → delivery:zip-confirm modal appears correctly on oversized payload (backend returns awaiting_confirmation status)</div>
+        </div>
+      </div>
+
+      <div class="sprint" onclick="tog('s4')">
+        <div class="sprint-hdr" onclick="tog('s4')">
+          <span class="sprint-num">Sprint 4</span>
+          <span class="sprint-title">Delivery services + ZIP compression</span>
+          <span class="sprint-week">Week 5</span>
+          <span class="sprint-chevron" id="tc-s4">↓</span>
+        </div>
+        <div class="sprint-body" id="sb-s4">
+          <ul class="tasks">
+            <li class="task">Nodemailer with Gmail App Password. Compose email with Cloudinary URLs. Log to DeliveryHistory.</li>
+            <li class="task">whatsapp-web.js QR auth. Persist WhatsApp session to WHATSAPP_SESSION_PATH — no re-scan on restart.</li>
+            <li class="task">Replace mock sendEmail() and sendWhatsApp() with real implementations.</li>
+            <li class="task new-task">Install <code>archiver</code>. Implement <code>checkDeliverySize(photoIds, medium)</code> using stored photo.bytes.</li>
+            <li class="task new-task">Implement <code>createAndUploadZip(photoIds)</code> — archiver streams to buffer → Cloudinary raw upload with temp tag.</li>
+            <li class="task new-task">Add <code>POST /api/delivery/zip-confirm</code> endpoint. Handles confirmed:true (create ZIP + deliver) and confirmed:false (cancel + cleanup session).</li>
+            <li class="task new-task">Wire ZIP confirmation flow into sendEmail and sendWhatsApp tool executors.</li>
+            <li class="task new-task">Add Cloudinary cleanup job — scheduled BullMQ task deletes temp ZIP assets after 24hr using stored public_id.</li>
+            <li class="task"><code>GET /api/history</code> endpoint — ChatHistory + DeliveryHistory for "what did I send yesterday?" queries.</li>
+          </ul>
+          <div class="gate">normal delivery works end-to-end → oversized delivery triggers confirmation modal → confirm → ZIP received by recipient → ZIP logged in DeliveryHistory with format:'zip' → decline → clean cancellation message in chat</div>
+        </div>
+      </div>
+
+      <div class="sprint" onclick="tog('s5')">
+        <div class="sprint-hdr">
+          <span class="sprint-num">Sprint 5</span>
+          <span class="sprint-title">Production hardening</span>
+          <span class="sprint-week">Week 6</span>
+          <span class="sprint-chevron" id="tc-s5">↓</span>
+        </div>
+        <div class="sprint-body" id="sb-s5">
+          <ul class="tasks">
+            <li class="task">pino logging on all tool calls, queue failures, delivery failures, Python errors, ZIP events.</li>
+            <li class="task">Input coercion: people always array, dates ISO strings, recipients validated before tool execution.</li>
+            <li class="task">MAX_TOOL_DEPTH = 5 enforced. MAX_HISTORY = 20 enforced (slice oldest).</li>
+            <li class="task">Graceful error messages to user when tool fails — no raw stack traces in tool results.</li>
+            <li class="task">Rate limiting on chat endpoint. Auth verified on all non-public routes.</li>
+            <li class="task new-task">Handle pendingZipConfirmation expiry — if user never responds, auto-cancel after 10 minutes and notify via socket.</li>
+          </ul>
+          <div class="gate">send bad inputs through chat → graceful handling → leave a pending ZIP confirmation unanswered for 10min → auto-cancel fires → no zombie state in Redis</div>
+        </div>
+      </div>
+
+      <div class="sprint" onclick="tog('s6')">
+        <div class="sprint-hdr">
+          <span class="sprint-num">Sprint 6</span>
+          <span class="sprint-title">Deployment</span>
+          <span class="sprint-week">3–4 days</span>
+          <span class="sprint-chevron" id="tc-s6">↓</span>
+        </div>
+        <div class="sprint-body" id="sb-s6">
+          <ul class="tasks">
+            <li class="task">Vercel for React. Set VITE_API_URL to Railway backend URL.</li>
+            <li class="task">Railway for Express backend. Railway for Python face service. Internal networking between them.</li>
+            <li class="task">MongoDB Atlas, Upstash Redis, Cloudinary — all already cloud-native.</li>
+            <li class="task">Set all env vars in Railway dashboard including WHATSAPP_SESSION_PATH and FACE_SERVICE_URL (internal Railway URL).</li>
+            <li class="task">README: architecture diagram, setup instructions, env var reference, known limitations.</li>
+            <li class="task">Demo video (90 seconds): login → upload → face label → chat query → normal delivery → oversized delivery → ZIP confirmation → ZIP received.</li>
+          </ul>
+          <div class="gate">live URL works, demo video recorded, all 12 interview questions answerable cold</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- INTERVIEWS -->
+<section class="section" id="interviews">
+  <div class="container">
+    <div class="eyebrow">06 — Interview preparation</div>
+    <h2>12 questions you will be asked</h2>
+    <p class="lead">If this project is on your resume, an interviewer will probe at least four of these. Know all twelve before submitting applications.</p>
+
+    <div class="iq-grid">
+      <div class="iq">
+        <div class="iq-q">Q1</div>
+        <div class="iq-a"><strong>How does the agent resolve "them" in "email them to my brother"?</strong><br/><br/>Conversation history stored in Redis per session. Every Groq call receives full message history. Backend also maintains <code>session.memory.lastPhotoSearch.photoIds</code> — the sendEmail tool injects these directly rather than relying entirely on LLM reconstruction. Deterministic state augments probabilistic reasoning.</div>
+      </div>
+      <div class="iq">
+        <div class="iq-q">Q2</div>
+        <div class="iq-a"><strong>Why Redis for session memory instead of MongoDB?</strong><br/><br/>Session memory is ephemeral (24hr TTL), updated on every turn, and requires sub-millisecond reads since it blocks the agent loop. MongoDB's persistence overhead and connection latency are unnecessary for short-lived session-scoped data.</div>
+      </div>
+      <div class="iq">
+        <div class="iq-q">Q3</div>
+        <div class="iq-a"><strong>Why BullMQ instead of synchronous processing?</strong><br/><br/>Face recognition takes 2–10 seconds per photo. Synchronous processing blocks the Express event loop. BullMQ moves work to background workers, the API returns immediately, Socket.io streams progress. Industry-standard pattern for any long-running CPU task in Node.</div>
+      </div>
+      <div class="iq">
+        <div class="iq-q">Q4</div>
+        <div class="iq-a"><strong>Why a Python microservice for face recognition?</strong><br/><br/>DeepFace with FaceNet512 and RetinaFace produces measurably better embeddings than JS alternatives in difficult lighting and off-angle conditions. Python is the correct tool for this problem. Node calls it over HTTP internally — the boundary is clean and the Node side never touches Python code.</div>
+      </div>
+      <div class="iq">
+        <div class="iq-q">Q5</div>
+        <div class="iq-a"><strong>How do face embeddings work and how do you match them?</strong><br/><br/>FaceNet512 maps each face to a 512-dimensional float vector where geometrically similar faces cluster close together. Cosine similarity measures angular difference between vectors — preferred over Euclidean distance because it's invariant to vector magnitude, making it more robust across different image brightness conditions.</div>
+      </div>
+      <div class="iq">
+        <div class="iq-q">Q6</div>
+        <div class="iq-a"><strong>Why not Qdrant?</strong><br/><br/>At a few thousand faces, cosine similarity in Node against MongoDB is under 20ms — fast enough. Qdrant's HNSW indexing becomes valuable at tens of thousands of vectors. The embedding schema is designed for clean migration — moving to Qdrant in v2 requires only a different query layer, no data changes. Adding it to v1 would be resume padding I cannot justify technically.</div>
+      </div>
+      <div class="iq">
+        <div class="iq-q">Q7</div>
+        <div class="iq-a"><strong>How do you handle tool-calling failures or hallucinations?</strong><br/><br/>Parameters validated before execution — people coerced to array, recipients validated. Tool errors returned to Groq as tool results, not thrown. Agent loop bounded at 5 iterations. Users get friendly messages, never raw stack traces. pendingZipConfirmation auto-expires after 10 minutes to prevent zombie session state.</div>
+      </div>
+      <div class="iq">
+        <div class="iq-q">Q8</div>
+        <div class="iq-a"><strong>How does Node communicate with the Python service?</strong><br/><br/>HTTP POST to Flask at an internal URL. Node polls <code>GET /health</code> on startup and refuses to queue face jobs if it returns an error. 3-attempt retry with 30s timeout on each recognition call. Failure is surfaced to the client via Socket.io, not silently dropped.</div>
+      </div>
+      <div class="iq iq-new">
+        <div class="iq-q iq-q-new">Q9 — new</div>
+        <div class="iq-a"><strong>How does the ZIP delivery feature work?</strong><br/><br/>Before sending, the delivery service sums photo sizes using Cloudinary's stored <code>bytes</code> metadata — no download required. If total exceeds the platform limit (25MB for Gmail, 100MB for WhatsApp), a <code>delivery:zip-confirm</code> Socket.io event is emitted to the client. On confirmation, <code>archiver</code> streams photos into a ZIP buffer, uploads it to Cloudinary as a temporary raw asset, and sends the URL. The ZIP is auto-deleted after 24 hours. All outcomes logged to DeliveryHistory.</div>
+      </div>
+      <div class="iq iq-new">
+        <div class="iq-q iq-q-new">Q10 — new</div>
+        <div class="iq-a"><strong>Why Socket.io for the ZIP confirmation instead of a REST endpoint?</strong><br/><br/>The confirmation is a server-initiated event — the server discovers the size issue during delivery execution and needs to notify the client immediately, not wait for the client to poll. Socket.io is already in the stack for recognition progress events. Reusing the existing connection for delivery confirmation is architecturally consistent and requires no additional infrastructure.</div>
+      </div>
+      <div class="iq iq-new">
+        <div class="iq-q iq-q-new">Q11 — new</div>
+        <div class="iq-a"><strong>Why was Socket.io added minimally in Sprint 1 instead of fully?</strong><br/><br/>Sprint 2 (agent framework) is entirely HTTP-based and has no real-time use case. Adding full Socket.io in Sprint 1 would be building infrastructure for a problem that doesn't exist yet. The minimal Sprint 1 layer (JWT handshake + user room join only) solves the non-obvious auth setup early — the one part that causes debugging pain if discovered in Sprint 4 while simultaneously working on BullMQ workers.</div>
+      </div>
+      <div class="iq">
+        <div class="iq-q">Q12</div>
+        <div class="iq-a"><strong>How would you scale this to 10,000 simultaneous users?</strong><br/><br/>Horizontal BullMQ workers for recognition queue load. Redis cluster for session memory. Move embeddings to Qdrant with HNSW indexing as face database grows past ~50k. Cloudinary CDN handles photo serving at any scale without changes. Python face service scaled horizontally behind a load balancer. Each deferred decision becomes justified precisely at the scale that demands it.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SUCCESS -->
+<section class="section" id="success">
+  <div class="container">
+    <div class="eyebrow">07 — Success definition</div>
+    <h2>What done looks like</h2>
+    <p>The project is complete when a single user session can execute this entire flow without manual intervention.</p>
+    <div class="sf">
+      <div class="sf-step"><div class="sf-box">Upload photos via the web interface</div><div class="sf-arr">↓</div></div>
+      <div class="sf-step"><div class="sf-box">Faces detected in background — progress shown live</div><div class="sf-arr">↓</div></div>
+      <div class="sf-step"><div class="sf-box">Unknown faces prompt for labeling automatically</div><div class="sf-arr">↓</div></div>
+      <div class="sf-step"><div class="sf-box hl">"Show me Dad's photos from Diwali 2023"</div><div class="sf-arr">↓</div></div>
+      <div class="sf-step"><div class="sf-box">AI retrieves the correct photos</div><div class="sf-arr">↓</div></div>
+      <div class="sf-step"><div class="sf-box hl">"Email them to mom@gmail.com"</div><div class="sf-arr">↓</div></div>
+      <div class="sf-step"><div class="sf-box">Under 25MB → email sent directly</div><div class="sf-arr">↓</div></div>
+      <div class="sf-step"><div class="sf-box hl-new">Over 25MB → "Send as ZIP?" confirmation appears</div><div class="sf-arr">↓</div></div>
+      <div class="sf-step"><div class="sf-box">User confirms → ZIP created → email sent with ZIP</div><div class="sf-arr">↓</div></div>
+      <div class="sf-step"><div class="sf-box">Delivery logged. History queryable. ZIP auto-deleted.</div></div>
+    </div>
+
+    <div class="callout c-green" style="margin-top:2rem">
+      <div class="callout-icon">◈</div>
+      <div class="callout-body">
+        <div class="callout-title">The project's core claim</div>
+        <p>Drishyamitra demonstrates that you understand agentic AI as a specific engineering pattern — an LLM with tool access, operating in a bounded loop, with structured state management that makes reference resolution reliable. The ZIP delivery feature demonstrates you design for real-world constraints, not just happy paths. Together, they show engineering maturity that goes beyond tutorial-following.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="ft">
+    <div class="ft-title">Drishya<em>mitra</em></div>
+    <p class="ft-sub">AI-Powered Photo Management System — Project Document</p>
+    <p class="ft-sub">MERN + Python · Groq · BullMQ · DeepFace · Socket.io · archiver</p>
+    <p class="ft-v">v2 — Socket.io placement corrected · ZIP delivery feature added</p>
+  </div>
+</footer>
+
+<script>
+function tog(id){
+  const b=document.getElementById('sb-'+id);
+  const c=document.getElementById('tc-'+id);
+  const open=b.classList.contains('open');
+  b.classList.toggle('open',!open);
+  c.textContent=open?'↓':'↑';
+  c.classList.toggle('open',!open);
+}
+</script>
+</body>
+</html>
