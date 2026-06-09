@@ -2,6 +2,7 @@ import { getSession, saveSession } from "../services/session.service.js";
 import { selectModel } from "../services/modelRouter.js";
 import { executeTool } from "./toolExecutor.js";
 import { TOOLS } from "./tools.js";
+import { saveChatHistory } from "../services/chatHistory.service.js";
 import groq from "../config/groq.js";
 import { logger } from "../config/logger.js";
 
@@ -144,6 +145,17 @@ export async function runAgent({ userId, message }) {
 
   // 7. Save updated session back to Redis (one single write)
   await saveSession(userId, session);
+
+  // 8. Save completed chat interaction to database (non-blocking for user response experience)
+  try {
+    await saveChatHistory({
+      userId,
+      userMessage: message,
+      assistantReply: finalReply
+    });
+  } catch (err) {
+    logger.error({ err, userId }, "Failed to save chat history to database");
+  }
 
   return {
     reply: finalReply,

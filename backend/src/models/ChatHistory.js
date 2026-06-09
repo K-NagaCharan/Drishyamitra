@@ -14,6 +14,14 @@ const ChatHistorySchema = new mongoose.Schema({
     type: String,
     default: ""
   },
+  userMessage: {
+    type: String,
+    required: [true, "User message is required"]
+  },
+  assistantReply: {
+    type: String,
+    required: [true, "Assistant reply is required"]
+  },
   createdAt: {
     type: Date,
     default: Date.now
