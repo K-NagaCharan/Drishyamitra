@@ -23,3 +23,13 @@ export const labelFace = async (faceId, personName) => {
   const response = await api.post(`/faces/${faceId}/label`, { personName });
   return response.data;
 };
+
+/**
+ * Retrieve visual name suggestion for an unlabeled face
+ * @param {string} faceId - Face ObjectID
+ * @returns {Promise<object>} - Suggestion payload
+ */
+export const getFaceSuggestion = async (faceId) => {
+  const response = await api.get(`/faces/${faceId}/suggest`);
+  return response.data;
+};

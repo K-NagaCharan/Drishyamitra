@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Face from "../models/Face.js";
 import * as faceLabelingService from "../services/faceLabeling.service.js";
+import * as faceSuggestionService from "../services/faceSuggestion.service.js";
 import { successResponse, errorResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { logger } from "../config/logger.js";
@@ -133,4 +134,46 @@ export const labelFace = asyncHandler(async (req, res) => {
     // Default status for unexpected server errors
     return errorResponse(res, 500, "Unexpected server error");
   }
+});
+
+/**
+ * Retrieve visual name suggestion for an unlabeled face based on previous matches
+ */
+export const getFaceSuggestion = asyncHandler(async (req, res) => {
+  const startTime = Date.now();
+  const { faceId } = req.params;
+  const userId = req.user._id;
+
+  // 1. Validate faceId format
+  if (!mongoose.Types.ObjectId.isValid(faceId)) {
+    logger.warn({ endpoint: "GET /faces/:faceId/suggest", userId, faceId }, "Suggestion query failed: invalid faceId");
+    return errorResponse(res, 400, "Invalid faceId format");
+  }
+
+  // 2. Retrieve face document
+  const face = await Face.findById(faceId);
+  if (!face) {
+    logger.warn({ endpoint: "GET /faces/:faceId/suggest", userId, faceId }, "Suggestion query failed: face not found");
+    return errorResponse(res, 404, "Face not found");
+  }
+
+  // 3. Verify user tenancy ownership
+  if (face.userId.toString() !== userId.toString()) {
+    logger.warn({ endpoint: "GET /faces/:faceId/suggest", userId, faceId }, "Suggestion query failed: access denied");
+    return errorResponse(res, 403, "Access denied. You do not own this face.");
+  }
+
+  // 4. Resolve suggestion
+  const result = await faceSuggestionService.suggestFaceLabel(face.embedding, userId);
+
+  const duration = Date.now() - startTime;
+  logger.info({
+    endpoint: "GET /faces/:faceId/suggest",
+    userId,
+    faceId,
+    suggested: result.suggested,
+    duration
+  }, "Face suggestion resolved successfully");
+
+  return res.status(200).json(result);
 });

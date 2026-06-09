@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import * as faceApi from '../services/faceApi';
 import UnknownFaceCard from '../components/faces/UnknownFaceCard';
+import FaceContextModal from '../components/faces/FaceContextModal';
 
 /**
  * FaceLabelingPage
@@ -12,6 +13,7 @@ const FaceLabelingPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
+  const [contextFace, setContextFace] = useState(null);
   const limit = 12; // 12 cards per page fits cleanly in responsive grids
 
   const fetchUnlabeledFaces = useCallback(async (targetPage) => {
@@ -34,7 +36,7 @@ const FaceLabelingPage = () => {
   }, [page, fetchUnlabeledFaces]);
 
   // Handle manual naming and optimistic state pruning
-  const handleLabelFace = async (faceId, personName) => {
+  const handleLabelFace = async (faceId, personName, isSuggested = false) => {
     try {
       const result = await faceApi.labelFace(faceId, personName);
       if (result && result.success) {
@@ -42,7 +44,9 @@ const FaceLabelingPage = () => {
         setFaces((prev) => prev.filter((f) => f.faceId !== faceId));
 
         // Toast notifications
-        if (result.propagated > 0) {
+        if (isSuggested) {
+          toast.success(`Automatically identified as ${result.personName}.`);
+        } else if (result.propagated > 0) {
           toast.success(`Labeled "${result.personName}"! Propagated to ${result.propagated} matching faces.`);
         } else {
           toast.success(`Labeled "${result.personName}" successfully.`);
@@ -160,6 +164,7 @@ const FaceLabelingPage = () => {
                 key={face.faceId}
                 face={face}
                 onLabel={handleLabelFace}
+                onViewContext={(f) => setContextFace(f)}
               />
             ))}
           </div>
@@ -187,6 +192,14 @@ const FaceLabelingPage = () => {
             </button>
           </div>
         </div>
+      )}
+      
+      {contextFace && (
+        <FaceContextModal
+          photoUrl={contextFace.photoUrl}
+          bbox={contextFace.bbox}
+          onClose={() => setContextFace(null)}
+        />
       )}
     </div>
   );
