@@ -44,6 +44,9 @@ const AppLayout = () => {
             <NavLink to="/chat" className={navLinkClass}>
               Chat
             </NavLink>
+            <NavLink to="/faces" className={navLinkClass}>
+              Faces
+            </NavLink>
           </div>
         </div>
 
@@ -66,6 +69,9 @@ const AppLayout = () => {
             </NavLink>
             <NavLink to="/chat" className={navLinkClass}>
               Chat
+            </NavLink>
+            <NavLink to="/faces" className={navLinkClass}>
+              Faces
             </NavLink>
           </div>
 

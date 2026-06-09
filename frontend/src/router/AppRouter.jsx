@@ -11,6 +11,7 @@ import Dashboard from '../pages/Dashboard';
 import Gallery from '../pages/Gallery';
 import Upload from '../pages/Upload';
 import Chat from '../pages/Chat';
+import FaceLabelingPage from '../pages/FaceLabelingPage';
 
 const RootRedirect = () => {
   const { isAuthenticated, loading } = useAuth();
@@ -42,6 +43,7 @@ const AppRouter = () => {
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/upload" element={<Upload />} />
             <Route path="/chat" element={<Chat />} />
+            <Route path="/faces" element={<FaceLabelingPage />} />
           </Route>
         </Route>
 

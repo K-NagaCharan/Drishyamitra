@@ -35,6 +35,7 @@ app.use("/api/v1/photos", photoRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/v1/chat", chatRoutes);
 app.use("/api/faces", faceRoutes);
+app.use("/api/v1/faces", faceRoutes);
 
 // Fallback 404 error handler
 app.use((req, res, next) => {
