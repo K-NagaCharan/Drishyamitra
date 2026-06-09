@@ -1,9 +1,32 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import useAuth from '../hooks/useAuth';
+import { getSocket } from '../services/socket';
 
 const Dashboard = () => {
-  const { user, logout } = useAuth();
+  const { user, token, logout } = useAuth();
+  const [isConnected, setIsConnected] = useState(false);
+
+  useEffect(() => {
+    const socket = getSocket();
+    if (!socket) {
+      setIsConnected(false);
+      return;
+    }
+
+    setIsConnected(socket.connected);
+
+    const handleConnect = () => setIsConnected(true);
+    const handleDisconnect = () => setIsConnected(false);
+
+    socket.on('connect', handleConnect);
+    socket.on('disconnect', handleDisconnect);
+
+    return () => {
+      socket.off('connect', handleConnect);
+      socket.off('disconnect', handleDisconnect);
+    };
+  }, [token]);
 
   const handleLogout = () => {
     logout();
@@ -52,7 +75,7 @@ const Dashboard = () => {
           </div>
 
           {/* Integration Status Card */}
-          <div className="col-span-1 md:col-span-1 bg-white border border-[#e8e4dc] rounded-xl p-6 shadow-sm flex flex-col justify-between min-h-[180px]">
+          <div className="col-span-1 md:col-span-1 bg-white border border-[#e8e4dc] rounded-xl p-6 shadow-sm flex flex-col justify-between min-h-[220px]">
             <div>
               <h3 className="font-mono text-[10px] uppercase tracking-widest text-[#9c9890] font-bold mb-4">
                 Integration API Status
@@ -61,6 +84,33 @@ const Dashboard = () => {
               <p className="text-xs text-[#6b6760] mt-1">
                 Connected to {import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1'}
               </p>
+
+              {/* Realtime Connection Status */}
+              <div className="mt-4 pt-4 border-t border-[#e8e4dc]">
+                <h4 className="font-mono text-[9px] uppercase tracking-widest text-[#9c9890] font-bold mb-2">
+                  Realtime Status
+                </h4>
+                <div className="flex items-center">
+                  {isConnected ? (
+                    <>
+                      <span className="relative flex h-2.5 w-2.5 mr-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+                      </span>
+                      <span className="text-xs font-mono text-green-600 font-bold uppercase tracking-wider">
+                        🟢 Connected
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="inline-block w-2.5 h-2.5 rounded-full bg-red-500 mr-2"></span>
+                      <span className="text-xs font-mono text-red-500 font-bold uppercase tracking-wider">
+                        🔴 Disconnected
+                      </span>
+                    </>
+                  )}
+                </div>
+              </div>
             </div>
             <div className="flex items-center mt-4">
               <span className="inline-block w-2.5 h-2.5 rounded-full bg-[#0f6e56] mr-2"></span>

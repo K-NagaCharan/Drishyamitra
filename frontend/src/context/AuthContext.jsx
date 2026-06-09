@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useCallback } from 'react';
 import api, { registerAuthInterceptor } from '../services/api';
+import { connectSocket, disconnectSocket } from '../services/socket';
 
 export const AuthContext = createContext(null);
 
@@ -72,6 +73,19 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     }
   }, [logout, fetchCurrentUser]);
+
+  // Handle socket connection based on authentication state and token changes
+  useEffect(() => {
+    if (isAuthenticated && token) {
+      connectSocket(token);
+    } else {
+      disconnectSocket();
+    }
+
+    return () => {
+      disconnectSocket();
+    };
+  }, [isAuthenticated, token]);
 
   return (
     <AuthContext.Provider
