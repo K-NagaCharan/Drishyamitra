@@ -39,5 +39,6 @@ export const env = {
   MAX_TOOL_DEPTH: parseInt(process.env.MAX_TOOL_DEPTH || "5", 10),
   MAX_HISTORY: parseInt(process.env.MAX_HISTORY || "20", 10),
   FACE_SERVICE_URL: process.env.FACE_SERVICE_URL || "http://localhost:5001",
-  FACE_MATCH_THRESHOLD: parseFloat(process.env.FACE_MATCH_THRESHOLD || "0.72")
+  FACE_SUGGESTION_THRESHOLD: parseFloat(process.env.FACE_SUGGESTION_THRESHOLD || "0.75"),
+  FACE_PROPAGATION_THRESHOLD: parseFloat(process.env.FACE_PROPAGATION_THRESHOLD || "0.85")
 };

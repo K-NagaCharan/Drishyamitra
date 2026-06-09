@@ -1,10 +1,15 @@
-from deepface import DeepFace
+from insightface.app import FaceAnalysis
 from config import Config
 from utils.image_utils import download_image
+import numpy as np
+
+# Initialize FaceAnalysis (Buffalo_L) once
+app = FaceAnalysis(name="buffalo_l")
+app.prepare(ctx_id=-1, det_size=(640, 640))
 
 def extract_embeddings(img):
     """
-    Executes DeepFace represent function to extract face embeddings and bounding boxes.
+    Executes InsightFace represent function to extract face embeddings and bounding boxes.
     
     Args:
         img (numpy.ndarray): OpenCV BGR image array.
@@ -13,24 +18,32 @@ def extract_embeddings(img):
         list: List of detected face representation dictionaries.
     """
     try:
-        results = DeepFace.represent(
-            img_path=img,
-            model_name=Config.FACE_MODEL,
-            detector_backend=Config.DETECTOR_BACKEND,
-            enforce_detection=True
-        )
+        faces = app.get(img)
         
-        # Normalize to list format for consistency
-        if not isinstance(results, list):
-            results = [results]
+        results = []
+        for face in faces:
+            # bbox is [x_min, y_min, x_max, y_max]
+            bbox = face.bbox
+            x = int(bbox[0])
+            y = int(bbox[1])
+            w = int(bbox[2] - bbox[0])
+            h = int(bbox[3] - bbox[1])
+            
+            # Convert embedding numpy array to a list
+            embedding = face.embedding.tolist()
+            
+            results.append({
+                "embedding": embedding,
+                "facial_area": {
+                    "x": x,
+                    "y": y,
+                    "w": w,
+                    "h": h
+                }
+            })
             
         return results
-    except ValueError as e:
-        # Check if the ValueError is due to face detection failing
-        err_msg = str(e).lower()
-        if "face could not be detected" in err_msg or "face_detection" in err_msg:
-            return []
-        # Re-raise any other ValueErrors (e.g. invalid img format)
+    except Exception as e:
         raise e
 
 def recognize_faces(image_url):

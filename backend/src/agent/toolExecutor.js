@@ -12,16 +12,16 @@ import { execute as requestZipConfirmation } from "./tools/requestZipConfirmatio
  * @returns {Promise<any>} The result of the tool execution.
  * @throws {Error} If the toolName is not recognized.
  */
-export async function executeTool(toolName, args) {
+export async function executeTool(toolName, args, userId) {
   // Safe argument handling
   const safeArgs = args ?? {};
 
   switch (toolName) {
     case "searchPhotos":
-      return searchPhotos(safeArgs);
+      return searchPhotos(safeArgs, userId);
 
     case "getPeople":
-      return getPeople(safeArgs);
+      return getPeople(safeArgs, userId);
 
     case "sendEmail":
       return sendEmail(safeArgs);

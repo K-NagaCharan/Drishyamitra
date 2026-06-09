@@ -3,6 +3,9 @@ import mongoose from "mongoose";
 import { connectDB } from "../src/config/db.js";
 import { logger } from "../src/config/logger.js";
 import User from "../src/models/User.js";
+import Photo from "../src/models/Photo.js";
+import Face from "../src/models/Face.js";
+import Person from "../src/models/Person.js";
 import jwt from "jsonwebtoken";
 import { env } from "../src/config/env.js";
 import groq from "../src/config/groq.js";
@@ -41,8 +44,14 @@ const runVerification = async () => {
   // Setup Database
   await connectDB();
 
-  // Clear previous test users
+  // Clear previous test users and data
   await User.deleteMany({ email: TEST_USER_EMAIL });
+  const existingTester = await User.findOne({ email: TEST_USER_EMAIL });
+  if (existingTester) {
+    await Face.deleteMany({ userId: existingTester._id });
+    await Person.deleteMany({ userId: existingTester._id });
+    await Photo.deleteMany({ userId: existingTester._id });
+  }
 
   // Create test user
   const testUser = new User({
@@ -51,6 +60,38 @@ const runVerification = async () => {
     passwordHash: "dummyhash123"
   });
   await testUser.save();
+
+  // Seed person "Dad"
+  const personDad = new Person({
+    userId: testUser._id,
+    name: "Dad",
+    nameNormalized: "dad"
+  });
+  await personDad.save();
+
+  // Seed photo
+  const testPhoto = new Photo({
+    _id: new mongoose.Types.ObjectId("60c72b2f9b1d8b2bad689d99"),
+    userId: testUser._id,
+    url: "https://res.cloudinary.com/dxgl7wq2e/image/upload/v1780996807/apes/photos/it9r9ttnr9or2omdm4fk.jpg",
+    cloudinaryPublicId: "apes/photos/testphoto",
+    width: 800,
+    height: 600,
+    status: "completed",
+    uploadDate: new Date("2024-03-11T12:00:00Z")
+  });
+  await testPhoto.save();
+
+  // Seed face coordinate
+  const testFace = new Face({
+    photoId: testPhoto._id,
+    userId: testUser._id,
+    personId: personDad._id,
+    embedding: Array(512).fill(0.1),
+    bbox: { x: 10, y: 10, w: 100, h: 100 },
+    isLabeled: true
+  });
+  await testFace.save();
 
   // Generate valid JWT token
   const token = jwt.sign(
@@ -129,8 +170,8 @@ const runVerification = async () => {
     
     const card = data.cards[0];
     assert(card.type === "photo", "Card type is 'photo'");
-    assert(card.id === "photo_001", "Card ID matches the mock search photos tool returned value");
-    assert(card.thumbnailUrl === "mock://photo1", "Card thumbnailUrl matches mock returned url field");
+    assert(card.id === "60c72b2f9b1d8b2bad689d99", "Card ID matches the seeded MongoDB photo ID");
+    assert(card.thumbnailUrl === "https://res.cloudinary.com/dxgl7wq2e/image/upload/v1780996807/apes/photos/it9r9ttnr9or2omdm4fk.jpg", "Card thumbnailUrl matches real Cloudinary URL");
     assert(card.person === "Dad", "Card person matches mock returned person field");
     assert(card.date === "2024-03-11", "Card date matches mock returned date field");
     

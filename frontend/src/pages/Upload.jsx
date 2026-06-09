@@ -1,92 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
-import api from '../services/api';
 import UploadDropzone from '../components/UploadDropzone';
+import { useUpload } from '../context/UploadContext';
 
 const Upload = () => {
   const navigate = useNavigate();
-  const [selectedFiles, setSelectedFiles] = useState([]);
-  const [previewUrls, setPreviewUrls] = useState([]);
-  const [uploadStatus, setUploadStatus] = useState('idle'); // idle | uploading | success | error
-  const [currentUploadIndex, setCurrentUploadIndex] = useState(0);
-  const [uploadProgress, setUploadProgress] = useState(0);
-
-  // Revoke object URLs to prevent memory leaks when file preview changes or unmounts
-  useEffect(() => {
-    return () => {
-      previewUrls.forEach(urlObj => URL.revokeObjectURL(urlObj.url));
-    };
-  }, [previewUrls]);
-
-  const handleFileSelect = (files) => {
-    // Revoke previous URLs
-    previewUrls.forEach(urlObj => URL.revokeObjectURL(urlObj.url));
-
-    setSelectedFiles(files);
-    setUploadStatus('idle');
-    setUploadProgress(0);
-    setCurrentUploadIndex(0);
-
-    const urls = files.map(file => ({
-      url: URL.createObjectURL(file),
-      name: file.name,
-      size: file.size
-    }));
-    setPreviewUrls(urls);
-  };
-
-  const handleClear = () => {
-    setSelectedFiles([]);
-    previewUrls.forEach(urlObj => URL.revokeObjectURL(urlObj.url));
-    setPreviewUrls([]);
-    setUploadStatus('idle');
-    setUploadProgress(0);
-    setCurrentUploadIndex(0);
-  };
-
-  const handleUpload = async () => {
-    if (selectedFiles.length === 0) return;
-
-    setUploadStatus('uploading');
-    setUploadProgress(0);
-
-    let successCount = 0;
-
-    for (let i = 0; i < selectedFiles.length; i++) {
-      const file = selectedFiles[i];
-      setCurrentUploadIndex(i);
-      setUploadProgress(0);
-
-      const formData = new FormData();
-      formData.append('file', file);
-
-      try {
-        await api.post('/photos/upload', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-          onUploadProgress: (progressEvent) => {
-            if (progressEvent.total) {
-              const percentage = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-              setUploadProgress(percentage);
-            }
-          },
-        });
-        successCount++;
-      } catch (err) {
-        const errMsg = err.response?.data?.message || err.message || `Upload failed for ${file.name}`;
-        toast.error(errMsg);
-      }
-    }
-
-    if (successCount > 0) {
-      setUploadStatus('success');
-      toast.success(`Successfully uploaded ${successCount} photo(s)!`);
-    } else {
-      setUploadStatus('error');
-    }
-  };
+  const {
+    selectedFiles,
+    previewUrls,
+    uploadStatus,
+    currentUploadIndex,
+    uploadProgress,
+    handleFileSelect,
+    handleClear,
+    handleUpload
+  } = useUpload();
 
   const formatSize = (bytes) => {
     if (bytes === 0) return '0 Bytes';

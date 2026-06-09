@@ -1,16 +1,17 @@
 import Face from "../models/Face.js";
+import Person from "../models/Person.js";
 import { env } from "../config/env.js";
 import { logger } from "../config/logger.js";
 import { cosineSimilarity } from "../utils/cosineSimilarity.js";
 import { AuthorizationError, NotFoundError } from "../utils/errors.js";
 
 // Initialize THRESHOLD once at module load time to keep logic clean and performant
-const THRESHOLD = env.FACE_MATCH_THRESHOLD;
+const THRESHOLD = env.FACE_PROPAGATION_THRESHOLD;
 
 /**
  * propagateFaceLabel
  * Scans other unlabeled faces belonging to the same user, computes their similarity
- * against the newly labeled face's embedding, and bulk-updates similar faces to link them
+ * against the person's centroid embedding, and bulk-updates similar faces to link them
  * to the same Person.
  * 
  * @param {string|object} faceId - Newly labeled face ObjectID.
@@ -33,7 +34,26 @@ export async function propagateFaceLabel(faceId, personId, userId) {
     throw new AuthorizationError("Access denied. You do not own this face.");
   }
 
-  const labeledEmbedding = face.embedding;
+  // Only propagate labels from manually verified anchor faces to prevent transitive chain drift
+  if (face.labelSource !== "manual") {
+    logger.info({ faceId, labelSource: face.labelSource }, "Skipping propagation: source face is not a manual anchor");
+    return {
+      checked: 0,
+      propagated: 0
+    };
+  }
+
+  // Retrieve the person's centroid
+  const person = await Person.findById(personId).lean();
+  if (!person || !person.centroid || person.centroid.length !== 512) {
+    logger.warn({ personId }, "Skipping propagation: Person centroid not found or invalid");
+    return {
+      checked: 0,
+      propagated: 0
+    };
+  }
+
+  const centroid = person.centroid;
 
   // 3. Load all candidate unlabeled faces for this user, explicitly excluding the current face
   // The originating labeled face must never be updated during propagation.
@@ -69,23 +89,21 @@ export async function propagateFaceLabel(faceId, personId, userId) {
   }
 
   // 4. Linear compare loop
-  // Future optimization:
-  // Compare embeddings in batches to reduce memory consumption.
   for (const candidate of candidates) {
     const candidateEmbedding = candidate.embedding;
 
     // Validate embedding dimensions before comparison
     if (
-      !labeledEmbedding ||
+      !centroid ||
       !candidateEmbedding ||
-      labeledEmbedding.length !== 512 ||
+      centroid.length !== 512 ||
       candidateEmbedding.length !== 512
     ) {
       logger.warn(
         {
           faceId,
           candidateId: candidate._id,
-          labeledLength: labeledEmbedding ? labeledEmbedding.length : null,
+          centroidLength: centroid ? centroid.length : null,
           candidateLength: candidateEmbedding ? candidateEmbedding.length : null
         },
         "Invalid face embedding dimensions. Skipping candidate face."
@@ -96,7 +114,7 @@ export async function propagateFaceLabel(faceId, personId, userId) {
     checked++;
 
     try {
-      const similarity = cosineSimilarity(labeledEmbedding, candidateEmbedding);
+      const similarity = cosineSimilarity(centroid, candidateEmbedding);
       if (similarity >= THRESHOLD) {
         matchingIds.push(candidate._id);
       }
@@ -112,10 +130,9 @@ export async function propagateFaceLabel(faceId, personId, userId) {
 
   // 5. Perform bulk update using updateMany
   if (matchingIds.length > 0) {
-    // Future: Wrap updateMany inside a MongoDB transaction session once transactional uploads are set up.
     const result = await Face.updateMany(
       { _id: { $in: matchingIds } },
-      { $set: { personId, isLabeled: true } }
+      { $set: { personId, isLabeled: true, labelSource: "propagation" } }
     );
     propagated = result.modifiedCount;
   }
@@ -131,15 +148,12 @@ export async function propagateFaceLabel(faceId, personId, userId) {
       propagated,
       durationMs
     },
-    "Face label propagation successfully completed"
+    "Face label propagation successfully completed against centroid"
   );
-
-  // Future optimization:
-  // Replace linear scan with vector search (Qdrant / pgvector / Pinecone)
-  // when embedding count becomes large.
 
   return {
     checked,
     propagated
   };
 }
+

@@ -295,9 +295,9 @@ async function main() {
     console.log("[TEST 6] PASSED.");
 
     // ==========================================
-    // TEST 7: Threshold Boundary Check (0.7199 vs 0.7200)
+    // TEST 7: Threshold Boundary Check (0.8499 vs 0.8500)
     // ==========================================
-    console.log("\n[TEST 7] Testing threshold boundary check (0.7199 vs 0.7200)...");
+    console.log("\n[TEST 7] Testing threshold boundary check (0.8499 vs 0.8500)...");
     await cleanDb();
     await seedPhoto();
 
@@ -310,8 +310,8 @@ async function main() {
     });
     await baseFace7.save();
 
-    // Face with similarity 0.7199 (below threshold 0.72)
-    const vecBelow = makeVectorWithSimilarity(0.7199);
+    // Face with similarity 0.8499 (below threshold 0.85)
+    const vecBelow = makeVectorWithSimilarity(0.8499);
     const faceBelow = new Face({
       photoId: testPhotoId,
       userId: testUserId,
@@ -321,8 +321,8 @@ async function main() {
     });
     await faceBelow.save();
 
-    // Face with similarity 0.7200 (exact threshold 0.72)
-    const vecAbove = makeVectorWithSimilarity(0.7200);
+    // Face with similarity 0.8500 (exact threshold 0.85)
+    const vecAbove = makeVectorWithSimilarity(0.8500);
     const faceAbove = new Face({
       photoId: testPhotoId,
       userId: testUserId,
@@ -336,17 +336,17 @@ async function main() {
     console.log("Result 7 (Threshold bounds):", res7);
 
     if (res7.propagated !== 1) {
-      throw new Error(`TEST 7 FAILED: Expected exactly 1 propagated face (the 0.7200 one), got ${res7.propagated}`);
+      throw new Error(`TEST 7 FAILED: Expected exactly 1 propagated face (the 0.8500 one), got ${res7.propagated}`);
     }
 
     const dbFaceBelow = await Face.findById(faceBelow._id);
     if (dbFaceBelow.isLabeled || dbFaceBelow.personId !== null) {
-      throw new Error("TEST 7 FAILED: Candidate with similarity 0.7199 was incorrectly propagated");
+      throw new Error("TEST 7 FAILED: Candidate with similarity 0.8499 was incorrectly propagated");
     }
 
     const dbFaceAbove = await Face.findById(faceAbove._id);
     if (!dbFaceAbove.isLabeled || dbFaceAbove.personId.toString() !== res7.personId.toString()) {
-      throw new Error("TEST 7 FAILED: Candidate with similarity 0.7200 was not propagated");
+      throw new Error("TEST 7 FAILED: Candidate with similarity 0.8500 was not propagated");
     }
     console.log("[TEST 7] PASSED.");
 

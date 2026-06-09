@@ -9,7 +9,7 @@ import React, { useState } from 'react';
  * @param {object} props.photo - Photo data object: { id, thumbnailUrl, person, date }
  */
 const ToolResultCard = ({ photo }) => {
-  const { thumbnailUrl, person, date } = photo;
+  const { thumbnailUrl, person, date, people } = photo;
   const [imageError, setImageError] = useState(false);
 
   // Consider mock URLs as immediate errors so we don't try to load them in the DOM
@@ -71,8 +71,11 @@ const ToolResultCard = ({ photo }) => {
 
       {/* Metadata Section */}
       <div className="p-3 flex-grow flex flex-col justify-between bg-white border-t border-[#e8e4dc]">
-        <div className="text-xs font-semibold text-[#0f0e0c] truncate font-sans" title={person}>
-          {person || 'Unknown'}
+        <div 
+          className="text-xs font-semibold text-[#0f0e0c] truncate font-sans" 
+          title={people && people.length > 0 ? people.join(', ') : (person || 'Unknown')}
+        >
+          {people && people.length > 0 ? people.join(', ') : (person || 'Unknown')}
         </div>
         <div className="text-[10px] text-[#6b6760] font-mono mt-1 select-none">
           {formatDate(date)}

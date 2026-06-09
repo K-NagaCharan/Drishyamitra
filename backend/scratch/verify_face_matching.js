@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { connectDB } from "../src/config/db.js";
 import { cosineSimilarity } from "../src/utils/cosineSimilarity.js";
-import { findBestFaceMatch } from "../src/services/faceMatching.service.js";
+import { findBestFaceMatch, updatePersonCentroid } from "../src/services/faceMatching.service.js";
 import Person from "../src/models/Person.js";
 import Face from "../src/models/Face.js";
 import Photo from "../src/models/Photo.js";
@@ -74,7 +74,8 @@ async function main() {
     // Create mock Person
     const person = new Person({
       userId: testUserId,
-      name: "Test Uncle"
+      name: "Test Uncle",
+      nameNormalized: "test uncle"
     });
     await person.save();
 
@@ -84,17 +85,22 @@ async function main() {
     baseEmbedding[10] = -0.2;
     baseEmbedding[511] = 0.1;
 
-    // Create mock Face document
+    // Create mock Face document with labelSource manual
     const face = new Face({
       photoId: testPhotoId,
       personId: person._id,
       userId: testUserId,
       embedding: baseEmbedding,
-      bbox: { x: 10, y: 15, w: 50, h: 55 }
+      bbox: { x: 10, y: 15, w: 50, h: 55 },
+      isLabeled: true,
+      labelSource: "manual"
     });
     await face.save();
 
-    // Create a slightly perturbed vector (high similarity > 0.72)
+    // Recompute person centroid
+    await updatePersonCentroid(person._id);
+
+    // Create a slightly perturbed vector (high similarity > 0.85)
     const queryEmbedding = [...baseEmbedding];
     queryEmbedding[0] = 0.505; // tiny change
     queryEmbedding[1] = 0.002; // tiny change
@@ -107,11 +113,8 @@ async function main() {
     if (matchResult.personId.toString() !== person._id.toString()) {
       throw new Error(`TEST 5 FAILED: Matched wrong person. Expected ${person._id}, got ${matchResult.personId}`);
     }
-    if (matchResult.faceId.toString() !== face._id.toString()) {
-      throw new Error(`TEST 5 FAILED: Returned wrong faceId. Expected ${face._id}, got ${matchResult.faceId}`);
-    }
-    if (matchResult.score < 0.72) {
-      throw new Error(`TEST 5 FAILED: Expected score > 0.72, got ${matchResult.score}`);
+    if (matchResult.score < 0.85) {
+      throw new Error(`TEST 5 FAILED: Expected score > 0.85, got ${matchResult.score}`);
     }
     console.log("[TEST 5] PASSED.");
 
@@ -126,8 +129,8 @@ async function main() {
     if (noMatchResult.matched) {
       throw new Error("TEST 6 FAILED: Expected matched to be false");
     }
-    if (noMatchResult.score >= 0.72) {
-      throw new Error(`TEST 6 FAILED: Expected score < 0.72, got ${noMatchResult.score}`);
+    if (noMatchResult.score >= 0.85) {
+      throw new Error(`TEST 6 FAILED: Expected score < 0.85, got ${noMatchResult.score}`);
     }
     console.log("[TEST 6] PASSED.");
 

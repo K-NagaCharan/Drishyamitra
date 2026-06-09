@@ -110,7 +110,7 @@ CRITICAL RULES:
         
         let result;
         try {
-          result = await executeTool(name, args);
+          result = await executeTool(name, args, userId);
           
           // Update agent's short-term memory key in Redis
           await updateAgentMemory({

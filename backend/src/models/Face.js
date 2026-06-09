@@ -43,6 +43,11 @@ const FaceSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  labelSource: {
+    type: String,
+    enum: ["manual", "propagation"],
+    default: null
+  },
   createdAt: {
     type: Date,
     default: Date.now

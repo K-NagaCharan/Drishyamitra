@@ -17,6 +17,14 @@ const PersonSchema = new mongoose.Schema({
     lowercase: true,
     trim: true
   },
+  centroid: {
+    type: [Number],
+    default: null
+  },
+  centroidCount: {
+    type: Number,
+    default: 0
+  },
   createdAt: {
     type: Date,
     default: Date.now

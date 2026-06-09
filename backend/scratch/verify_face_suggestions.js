@@ -7,6 +7,7 @@ import Face from "../src/models/Face.js";
 import Photo from "../src/models/Photo.js";
 import Person from "../src/models/Person.js";
 import { generateToken } from "../src/utils/jwt.js";
+import { updatePersonCentroid } from "../src/services/faceMatching.service.js";
 
 const makeVector = (size, val = 0.0) => Array(size).fill(val);
 
@@ -97,9 +98,14 @@ async function main() {
     personId: personA._id,
     embedding: vectorA,
     bbox: { x: 10, y: 10, w: 50, h: 50 },
-    isLabeled: true
+    isLabeled: true,
+    labelSource: "manual"
   });
   await labeledFaceA.save();
+
+  // Recalculate centroid for personA
+  await updatePersonCentroid(personA._id);
+
 
   // 3. Create a candidate unlabeled face for User A (exact visual match)
   const candidateFaceA = new Face({

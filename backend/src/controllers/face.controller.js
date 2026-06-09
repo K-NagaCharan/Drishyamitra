@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Face from "../models/Face.js";
+import Person from "../models/Person.js";
 import * as faceLabelingService from "../services/faceLabeling.service.js";
 import * as faceSuggestionService from "../services/faceSuggestion.service.js";
 import { successResponse, errorResponse } from "../utils/apiResponse.js";
@@ -176,4 +177,86 @@ export const getFaceSuggestion = asyncHandler(async (req, res) => {
   }, "Face suggestion resolved successfully");
 
   return res.status(200).json(result);
+});
+
+/**
+ * Retrieve list of labeled people with their matching first face coordinates for avatar display
+ */
+export const getLabeledPeople = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+
+  // Find all people for this user
+  const people = await Person.find({ userId }).sort({ name: 1 }).lean();
+
+  const result = [];
+  for (const person of people) {
+    // Find labeled faces for this person
+    const faces = await Face.find({ userId, personId: person._id, isLabeled: true })
+      .populate("photoId", "url")
+      .select("photoId bbox")
+      .lean();
+
+    // Scan for first face with non-null populated photoId having a valid url
+    const validFace = faces.find(f => f.photoId && f.photoId.url);
+
+    if (validFace) {
+      result.push({
+        id: person._id,
+        name: person.name,
+        avatarUrl: validFace.photoId.url,
+        bbox: validFace.bbox
+      });
+    }
+  }
+
+  return res.status(200).json(result);
+});
+
+/**
+ * Retrieve all photos in which a specific person is labeled
+ */
+export const getPersonPhotos = asyncHandler(async (req, res) => {
+  const { personId } = req.params;
+  const userId = req.user._id;
+
+  // Validate personId format
+  if (!mongoose.Types.ObjectId.isValid(personId)) {
+    return errorResponse(res, 400, "Invalid personId format");
+  }
+
+  // Find the person and check ownership
+  const person = await Person.findOne({ _id: personId, userId });
+  if (!person) {
+    return errorResponse(res, 404, "Person not found");
+  }
+
+  // Find all labeled faces for this person
+  const faces = await Face.find({ userId, personId, isLabeled: true })
+    .populate("photoId")
+    .lean();
+
+  // Extract unique photo documents
+  const photosMap = new Map();
+  for (const face of faces) {
+    if (face.photoId) {
+      photosMap.set(face.photoId._id.toString(), face.photoId);
+    }
+  }
+
+  const photos = Array.from(photosMap.values()).map(photo => ({
+    id: photo._id,
+    userId: photo.userId,
+    url: photo.url,
+    cloudinaryPublicId: photo.cloudinaryPublicId,
+    width: photo.width,
+    height: photo.height,
+    status: photo.status,
+    faceCount: photo.faceCount,
+    uploadDate: photo.uploadDate
+  }));
+
+  return res.status(200).json({
+    personName: person.name,
+    photos
+  });
 });

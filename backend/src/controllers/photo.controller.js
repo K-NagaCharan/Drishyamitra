@@ -1,10 +1,14 @@
+import mongoose from "mongoose";
 import * as photoService from "../services/photo.service.js";
 import Photo from "../models/Photo.js";
+import Face from "../models/Face.js";
 import { successResponse, errorResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { logger } from "../config/logger.js";
 import { recognizeFaces } from "../services/faceRecognition.service.js";
 import { processRecognizedFaces } from "../services/facePersistence.service.js";
+import { updatePersonCentroid } from "../services/faceMatching.service.js";
+
 
 /**
  * Handle photo upload requests
@@ -101,7 +105,7 @@ export const getPhotos = asyncHandler(async (req, res) => {
 });
 
 /**
- * Handle photo deletions
+ * Handle photo deletions (including associated faces)
  */
 export const deletePhoto = asyncHandler(async (req, res) => {
   const { id } = req.params;
@@ -124,10 +128,96 @@ export const deletePhoto = asyncHandler(async (req, res) => {
   // Remove from Cloudinary
   await photoService.deleteAsset(photo.cloudinaryPublicId);
 
+  // Find associated manual faces before deleting to update centroids
+  const facesToDelete = await Face.find({ photoId: id }).select("personId labelSource").lean();
+  const manualPersonIds = [...new Set(facesToDelete.filter(f => f.labelSource === "manual" && f.personId).map(f => f.personId.toString()))];
+
   // Remove metadata record
   await Photo.deleteOne({ _id: id });
+
+  // Remove associated Face records
+  await Face.deleteMany({ photoId: id });
+
+  // Recalculate centroids for affected people
+  for (const personId of manualPersonIds) {
+    try {
+      await updatePersonCentroid(personId);
+    } catch (err) {
+      logger.error({ personId, err: err.message }, "Failed to update centroid on photo delete");
+    }
+  }
 
   logger.info({ requestId: req.id, photoId: photo._id }, "Photo successfully deleted from database");
 
   return successResponse(res, null, "Photo deleted successfully");
+});
+
+/**
+ * Handle bulk photo deletions
+ */
+export const bulkDeletePhotos = asyncHandler(async (req, res) => {
+  const { ids } = req.body; // Array of photo ObjectIDs
+
+  if (!ids || !Array.isArray(ids) || ids.length === 0) {
+    return errorResponse(res, 400, "Invalid payload. Expected an array of photo IDs.");
+  }
+
+  // Validate all IDs
+  for (const id of ids) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return errorResponse(res, 400, `Invalid photo ID format: ${id}`);
+    }
+  }
+
+  // Find all these photos and verify ownership
+  const photos = await Photo.find({ _id: { $in: ids } });
+  
+  // Enforce ownership: filter photos that belong to the user
+  const ownedPhotos = photos.filter(photo => photo.userId.toString() === req.user._id.toString());
+  if (ownedPhotos.length === 0) {
+    return errorResponse(res, 403, "Access denied. You do not own any of these photos.");
+  }
+
+  const ownedIds = ownedPhotos.map(p => p._id);
+  const publicIds = ownedPhotos.map(p => p.cloudinaryPublicId);
+
+  // Find associated manual faces before deleting to update centroids
+  const facesToDelete = await Face.find({ photoId: { $in: ownedIds } }).select("personId labelSource").lean();
+  const manualPersonIds = [...new Set(facesToDelete.filter(f => f.labelSource === "manual" && f.personId).map(f => f.personId.toString()))];
+
+  logger.info(
+    { requestId: req.id, userId: req.user._id, count: ownedIds.length },
+    "Bulk destroying assets on Cloudinary"
+  );
+
+  // Remove from Cloudinary in parallel/sequential loops
+  for (const publicId of publicIds) {
+    try {
+      await photoService.deleteAsset(publicId);
+    } catch (err) {
+      logger.error({ publicId, err: err.message }, "Failed to delete Cloudinary asset during bulk delete");
+    }
+  }
+
+  // Delete metadata records from database
+  await Photo.deleteMany({ _id: { $in: ownedIds } });
+  
+  // Delete associated Face records to maintain integrity
+  await Face.deleteMany({ photoId: { $in: ownedIds } });
+
+  // Recalculate centroids for affected people
+  for (const personId of manualPersonIds) {
+    try {
+      await updatePersonCentroid(personId);
+    } catch (err) {
+      logger.error({ personId, err: err.message }, "Failed to update centroid during bulk delete");
+    }
+  }
+
+  logger.info({ requestId: req.id, count: ownedIds.length }, "Photos successfully deleted in bulk from database");
+
+  return res.status(200).json({
+    success: true,
+    message: `Successfully deleted ${ownedIds.length} photo(s)`
+  });
 });

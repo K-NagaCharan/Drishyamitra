@@ -1,6 +1,13 @@
 import React from 'react';
 
-const PhotoCard = ({ photo, onDeleteClick, isDeleting }) => {
+const PhotoCard = ({
+  photo,
+  onDeleteClick,
+  isDeleting,
+  isSelectionMode,
+  isSelected,
+  onSelectToggle
+}) => {
   // Format Date
   const formatDate = (dateString) => {
     try {
@@ -12,7 +19,16 @@ const PhotoCard = ({ photo, onDeleteClick, isDeleting }) => {
   };
 
   return (
-    <div className="relative group bg-white border border-[#e8e4dc] rounded-xl overflow-hidden shadow-sm hover:shadow-md transition duration-200 flex flex-col h-full">
+    <div
+      onClick={isSelectionMode ? () => onSelectToggle(photo.id) : undefined}
+      className={`relative group bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition duration-200 flex flex-col h-full ${
+        isSelectionMode ? 'cursor-pointer' : ''
+      } ${
+        isSelectionMode && isSelected 
+          ? 'border-[#c8501a] ring-2 ring-[#c8501a]/20' 
+          : 'border-[#e8e4dc]'
+      }`}
+    >
       {/* Thumbnail Container */}
       <div className="relative aspect-square w-full bg-[#f2f0eb] overflow-hidden">
         <img
@@ -33,19 +49,39 @@ const PhotoCard = ({ photo, onDeleteClick, isDeleting }) => {
           </span>
         </div>
 
-        {/* Delete button overlay - visible on hover */}
-        <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition z-10">
-          <button
-            onClick={() => onDeleteClick(photo)}
-            disabled={isDeleting}
-            className="p-2 bg-white/95 hover:bg-red-50 text-[#6b6760] hover:text-red-600 rounded-lg shadow-sm border border-[#e8e4dc] transition hover:scale-105 active:scale-95 cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
-            title="Delete Photo"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
-          </button>
-        </div>
+        {/* Selection Checkbox Overlay */}
+        {isSelectionMode && (
+          <div className="absolute top-3 right-3 z-10">
+            <div className={`w-6 h-6 rounded-full flex items-center justify-center border-2 transition ${
+              isSelected 
+                ? 'bg-[#c8501a] border-[#c8501a] text-white shadow-sm' 
+                : 'bg-black/20 border-white text-transparent'
+            }`}>
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+          </div>
+        )}
+
+        {/* Delete button overlay - visible on hover (only when not in selection mode) */}
+        {!isSelectionMode && (
+          <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition z-10">
+            <button
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent card click
+                onDeleteClick(photo);
+              }}
+              disabled={isDeleting}
+              className="p-2 bg-white/95 hover:bg-red-50 text-[#6b6760] hover:text-red-600 rounded-lg shadow-sm border border-[#e8e4dc] transition hover:scale-105 active:scale-95 cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
+              title="Delete Photo"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+          </div>
+        )}
 
         {/* Loading Spinner overlay when card is undergoing active deletion */}
         {isDeleting && (
@@ -72,15 +108,6 @@ const PhotoCard = ({ photo, onDeleteClick, isDeleting }) => {
             <span className="font-mono">{photo.width || '?'} × {photo.height || '?'} px</span>
             <span>{formatDate(photo.uploadDate)}</span>
           </div>
-        </div>
-
-        <div className="pt-2 border-t border-[#f2f0eb] flex justify-between items-center text-[11px] font-mono">
-          <span className="text-[#6b6760]">Identified Faces:</span>
-          <span className={`px-2 py-0.5 rounded-full font-bold ${
-            photo.faceCount > 0 ? 'bg-[#eeedfe] text-[#3c3489]' : 'bg-[#f2f0eb] text-[#6b6760]'
-          }`}>
-            {photo.faceCount ?? 0}
-          </span>
         </div>
       </div>
     </div>

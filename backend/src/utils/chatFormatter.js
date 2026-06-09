@@ -19,7 +19,8 @@ export function formatAgentResponse(result) {
             type: "photo",
             id: photo.id,
             thumbnailUrl: photo.url || "",
-            person: photo.person || "Unknown",
+            people: photo.people || [],
+            person: photo.people && photo.people.length > 0 ? photo.people.join(", ") : "Unknown",
             date: photo.date || ""
           });
         });

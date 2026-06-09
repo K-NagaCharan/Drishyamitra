@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import api from '../services/api';
 import PhotoCard from '../components/PhotoCard';
+import PersonAvatar from '../components/PersonAvatar';
 import ConfirmDeleteModal from '../components/ConfirmDeleteModal';
 import EmptyState from '../components/EmptyState';
 import PageLoader from '../components/PageLoader';
 
 const Gallery = () => {
+  const navigate = useNavigate();
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -17,10 +20,16 @@ const Gallery = () => {
   const [hasMore, setHasMore] = useState(true);
   const LIMIT = 30;
 
-  // Deletion details
+  // Labeled People
+  const [people, setPeople] = useState([]);
+  const [loadingPeople, setLoadingPeople] = useState(true);
+
+  // Deletion details (Single & Selection)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [deletingIds, setDeletingIds] = useState([]);
+  const [isSelectionMode, setIsSelectionMode] = useState(false);
+  const [selectedPhotoIds, setSelectedPhotoIds] = useState([]);
 
   // Fetch photos function
   const fetchPhotos = useCallback(async (currentSkip, append = false) => {
@@ -58,10 +67,24 @@ const Gallery = () => {
     }
   }, []);
 
+  // Fetch people function
+  const fetchPeople = useCallback(async () => {
+    setLoadingPeople(true);
+    try {
+      const response = await api.get('/faces/people');
+      setPeople(response.data);
+    } catch (err) {
+      console.error('Failed to load people avatars:', err);
+    } finally {
+      setLoadingPeople(false);
+    }
+  }, []);
+
   // Fetch initial batch on mount
   useEffect(() => {
     fetchPhotos(0);
-  }, [fetchPhotos]);
+    fetchPeople();
+  }, [fetchPhotos, fetchPeople]);
 
   // Load more trigger
   const handleLoadMore = () => {
@@ -75,6 +98,7 @@ const Gallery = () => {
     setSkip(0);
     setHasMore(true);
     fetchPhotos(0);
+    fetchPeople();
   };
 
   // Deletion handlers
@@ -105,19 +129,106 @@ const Gallery = () => {
     }
   };
 
+  // Selection handlers
+  const handleToggleSelectionMode = () => {
+    setIsSelectionMode((prev) => !prev);
+    setSelectedPhotoIds([]); // Reset selection on toggle
+  };
+
+  const handleSelectToggle = (photoId) => {
+    setSelectedPhotoIds((prev) =>
+      prev.includes(photoId) ? prev.filter((id) => id !== photoId) : [...prev, photoId]
+    );
+  };
+
+  const handleSelectAllToggle = () => {
+    if (selectedPhotoIds.length === photos.length) {
+      setSelectedPhotoIds([]);
+    } else {
+      setSelectedPhotoIds(photos.map((p) => p.id));
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedPhotoIds.length === 0) return;
+    
+    const confirmMsg = `Are you sure you want to delete ${selectedPhotoIds.length} photo(s)? This will permanently remove them and all associated faces.`;
+    if (!window.confirm(confirmMsg)) return;
+
+    // Add selected IDs to deleting list to show loaders
+    setDeletingIds((prev) => [...prev, ...selectedPhotoIds]);
+
+    try {
+      await api.post('/photos/bulk-delete', { ids: selectedPhotoIds });
+      toast.success(`Successfully deleted ${selectedPhotoIds.length} photo(s)!`);
+      
+      // Filter out immediately from UI
+      setPhotos((prev) => prev.filter((p) => !selectedPhotoIds.includes(p.id)));
+      setIsSelectionMode(false);
+      setSelectedPhotoIds([]);
+      // Refresh people avatars as some face references might be removed
+      fetchPeople();
+    } catch (err) {
+      const errMsg = err.response?.data?.message || err.message || 'Failed to delete photos';
+      toast.error(errMsg);
+    } finally {
+      setDeletingIds((prev) => prev.filter((id) => !selectedPhotoIds.includes(id)));
+    }
+  };
+
   return (
     <div className="flex-grow max-w-7xl w-full mx-auto p-6 md:p-12 space-y-8 select-none flex flex-col justify-start">
-      {/* Header */}
-      <section className="space-y-1">
-        <span className="font-mono text-xs uppercase tracking-widest text-[#c8501a] font-bold">
-          Asset Control
-        </span>
-        <h1 className="text-3xl font-serif text-[#0f0e0c]">
-          Photo Gallery
-        </h1>
-        <p className="text-sm text-[#6b6760] leading-relaxed">
-          Manage your uploaded images and map corresponding face structures.
-        </p>
+      {/* Header Section */}
+      <section className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 border-b border-[#e8e4dc] pb-6">
+        <div className="space-y-1">
+          <span className="font-mono text-xs uppercase tracking-widest text-[#c8501a] font-bold">
+            Asset Control
+          </span>
+          <h1 className="text-3xl font-serif text-[#0f0e0c]">
+            Photo Gallery
+          </h1>
+          <p className="text-sm text-[#6b6760] leading-relaxed">
+            Manage your uploaded images and map corresponding face structures.
+          </p>
+        </div>
+
+        {photos.length > 0 && (
+          <div className="flex items-center space-x-3">
+            {isSelectionMode ? (
+              <>
+                <span className="text-xs font-mono text-[#6b6760] mr-2">
+                  Selected: {selectedPhotoIds.length} photo(s)
+                </span>
+                <button
+                  onClick={handleSelectAllToggle}
+                  className="px-4 py-2 border border-[#e8e4dc] hover:bg-[#f2f0eb] text-xs font-mono uppercase tracking-widest rounded-lg transition active:scale-95 cursor-pointer bg-white text-[#3a3834]"
+                >
+                  {selectedPhotoIds.length === photos.length ? 'Deselect All' : 'Select All'}
+                </button>
+                <button
+                  onClick={handleBulkDelete}
+                  disabled={selectedPhotoIds.length === 0}
+                  className="px-4 py-2 bg-[#c8501a] hover:bg-[#c8501a]/90 disabled:opacity-50 text-white text-xs font-mono uppercase tracking-widest rounded-lg transition active:scale-95 cursor-pointer font-bold"
+                >
+                  Delete ({selectedPhotoIds.length})
+                </button>
+                <button
+                  onClick={handleToggleSelectionMode}
+                  className="px-4 py-2 border border-[#e8e4dc] hover:bg-[#f2f0eb] text-xs font-mono uppercase tracking-widest rounded-lg transition active:scale-95 cursor-pointer bg-white text-[#3a3834]"
+                >
+                  Cancel
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={handleToggleSelectionMode}
+                className="px-4 py-2 border border-[#e8e4dc] hover:border-[#c8501a] hover:text-[#c8501a] text-xs font-mono uppercase tracking-widest rounded-lg transition active:scale-95 cursor-pointer bg-white text-[#3a3834]"
+              >
+                Select Photos
+              </button>
+            )}
+          </div>
+        )}
       </section>
 
       {/* Main Area */}
@@ -147,18 +258,46 @@ const Gallery = () => {
         /* Empty State */
         <EmptyState />
       ) : (
-        /* Cards Grid list */
         <div className="space-y-10">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {photos.map((photo) => (
-              <PhotoCard
-                key={photo.id}
-                photo={photo}
-                onDeleteClick={handleDeleteClick}
-                isDeleting={deletingIds.includes(photo.id)}
-              />
-            ))}
-          </div>
+          {/* People horizontally scrolling section */}
+          {!loadingPeople && people.length > 0 && (
+            <section className="space-y-4 pb-6 border-b border-[#e8e4dc]/60">
+              <h2 className="text-sm font-mono uppercase tracking-widest text-[#6b6760] font-bold">
+                People
+              </h2>
+              <div className="flex items-center space-x-6 overflow-x-auto py-2 scrollbar-none scroll-smooth">
+                {people.map((person) => (
+                  <PersonAvatar
+                    key={person.id}
+                    person={person}
+                    onClick={() => navigate(`/gallery/person/${person.id}`)}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Photos grid section */}
+          <section className="space-y-4">
+            {people.length > 0 && (
+              <h2 className="text-sm font-mono uppercase tracking-widest text-[#6b6760] font-bold">
+                Photos
+              </h2>
+            )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 animate-in fade-in duration-200">
+              {photos.map((photo) => (
+                <PhotoCard
+                  key={photo.id}
+                  photo={photo}
+                  onDeleteClick={handleDeleteClick}
+                  isDeleting={deletingIds.includes(photo.id)}
+                  isSelectionMode={isSelectionMode}
+                  isSelected={selectedPhotoIds.includes(photo.id)}
+                  onSelectToggle={handleSelectToggle}
+                />
+              ))}
+            </div>
+          </section>
 
           {/* Pagination trigger button */}
           {hasMore && (

@@ -1,5 +1,6 @@
 import { findBestFaceMatch } from "./faceMatching.service.js";
 import Person from "../models/Person.js";
+import { env } from "../config/env.js";
 
 /**
  * suggestFaceLabel
@@ -11,11 +12,11 @@ import Person from "../models/Person.js";
  * @returns {Promise<object>} Suggestion result payload
  */
 export async function suggestFaceLabel(embedding, userId) {
-  // 1. Search for best visual match above FACE_MATCH_THRESHOLD (0.72)
+  // 1. Search for best visual match
   const match = await findBestFaceMatch(embedding, userId);
 
-  // 2. If matched successfully and person exists, load name
-  if (match.matched && match.personId) {
+  // 2. If score satisfies suggestion threshold, load name
+  if (match.personId && match.score >= env.FACE_SUGGESTION_THRESHOLD) {
     const person = await Person.findById(match.personId).lean();
     if (person) {
       return {
@@ -32,3 +33,4 @@ export async function suggestFaceLabel(embedding, userId) {
     suggested: false
   };
 }
+

@@ -1,10 +1,12 @@
+import Person from "../../models/Person.js";
+
 /**
- * Mock execution for getPeople tool.
+ * Live database execution for getPeople tool.
  */
-export async function execute(args) {
-  return [
-    "Dad",
-    "Mom",
-    "John"
-  ];
+export async function execute(args, userId) {
+  if (!userId) {
+    return [];
+  }
+  const people = await Person.find({ userId }).select("name").lean();
+  return people.map((p) => p.name);
 }

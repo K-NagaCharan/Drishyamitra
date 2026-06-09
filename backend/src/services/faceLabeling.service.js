@@ -2,6 +2,7 @@ import Person from "../models/Person.js";
 import Face from "../models/Face.js";
 import { logger } from "../config/logger.js";
 import { propagateFaceLabel } from "./facePropagation.service.js";
+import { addManualFaceToCentroid } from "./faceMatching.service.js";
 import { ValidationError, AuthorizationError, NotFoundError } from "../utils/errors.js";
 
 /**
@@ -82,11 +83,15 @@ export async function labelFace(faceId, userId, personName) {
   // 7. Update and save the Face document
   face.personId = person._id;
   face.isLabeled = true;
+  face.labelSource = "manual";
 
   // Future:
   // Wrap this update inside a MongoDB transaction session
   // once the upload pipeline becomes transactional.
   await face.save();
+
+  // Update centroid of the Person document with this manual label embedding
+  await addManualFaceToCentroid(person._id, face.embedding);
 
   // Run automatic label propagation for other matching unlabeled faces
   const propagation = await propagateFaceLabel(face._id, person._id, userId);
