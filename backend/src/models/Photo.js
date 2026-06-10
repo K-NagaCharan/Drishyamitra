@@ -25,6 +25,9 @@ const PhotoSchema = new mongoose.Schema({
     enum: ["processing", "completed", "failed"],
     default: "processing"
   },
+  bytes: {
+    type: Number
+  },
   faceCount: {
     type: Number,
     default: 0

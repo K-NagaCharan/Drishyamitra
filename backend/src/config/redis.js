@@ -4,6 +4,7 @@ import { logger } from "./logger.js";
 
 // Create Redis client using environment variable REDIS_URL
 const redis = new IORedis(env.REDIS_URL, {
+  keepAlive: 10000,
   // Automatic reconnect strategy
   retryStrategy: (times) => {
     const delay = Math.min(times * 200, 2000);
@@ -28,5 +29,14 @@ redis.on("ready", async () => {
     logger.error({ err: e }, "Redis ping failed");
   }
 });
+
+// Active keep-alive using application data to reset idle timeouts
+setInterval(() => {
+  if (redis.status === "ready") {
+    redis.ping().catch((err) => {
+      logger.error({ err: err.message }, "Redis keepalive ping failed");
+    });
+  }
+}, 15000).unref();
 
 export default redis;

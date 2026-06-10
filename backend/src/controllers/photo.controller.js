@@ -31,6 +31,7 @@ export const uploadPhoto = asyncHandler(async (req, res) => {
     cloudinaryPublicId: uploadResult.public_id,
     width: uploadResult.width,
     height: uploadResult.height,
+    bytes: uploadResult.bytes,
     status: "completed"
   });
 

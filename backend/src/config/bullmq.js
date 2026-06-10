@@ -8,6 +8,7 @@ import { logger } from "./logger.js";
  * for general application cache or session storage operations.
  */
 export const bullMQConnection = new IORedis(env.REDIS_URL, {
+  keepAlive: 10000,
   maxRetriesPerRequest: null, // Required option for BullMQ queue stability
   retryStrategy: (times) => {
     const delay = Math.min(times * 200, 2000);
@@ -28,6 +29,15 @@ bullMQConnection.on("ready", () => {
 bullMQConnection.on("error", (err) => {
   logger.error({ err }, "BullMQ Redis client error");
 });
+
+// Active keep-alive using application data to reset idle timeouts
+setInterval(() => {
+  if (bullMQConnection.status === "ready") {
+    bullMQConnection.ping().catch((err) => {
+      logger.error({ err: err.message }, "BullMQ Redis keepalive ping failed");
+    });
+  }
+}, 15000).unref();
 
 /**
  * Idempotently and gracefully closes the BullMQ Redis connection.

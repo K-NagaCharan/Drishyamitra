@@ -32,7 +32,8 @@ export const uploadStream = (fileBuffer) => {
         secure_url: "https://res.cloudinary.com/dxgl7wq2e/image/upload/v1780994444/apes/photos/csferaoodlqmujzx6ti4.jpg",
         public_id: "apes/photos/mock_public_id_abc123",
         width: 1200,
-        height: 800
+        height: 800,
+        bytes: 1048576 // 1 MB mock size
       });
     } else {
       logger.error("Cloudinary credentials missing in production! Aborting upload.");
