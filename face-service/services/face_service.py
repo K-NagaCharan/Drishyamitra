@@ -63,17 +63,34 @@ def extract_embeddings(img):
         list: List of detected face representation dictionaries.
     """
     try:
+        if img is None or not hasattr(img, "shape"):
+            raise ValueError("Input image is invalid or empty")
+            
         faces = app.get(img)
         faces = deduplicate_faces(faces, threshold=0.70)
         
+        # Get image dimensions for boundary clipping
+        img_h, img_w = img.shape[:2]
+        
         results = []
         for face in faces:
+            # Check for None embedding or invalid bbox
+            if face.embedding is None:
+                continue
+            if face.bbox is None or len(face.bbox) < 4:
+                continue
+                
             # bbox is [x_min, y_min, x_max, y_max]
             bbox = face.bbox
-            x = int(bbox[0])
-            y = int(bbox[1])
-            w = int(bbox[2] - bbox[0])
-            h = int(bbox[3] - bbox[1])
+            x_min = max(0, int(bbox[0]))
+            y_min = max(0, int(bbox[1]))
+            x_max = min(img_w, int(bbox[2]))
+            y_max = min(img_h, int(bbox[3]))
+            
+            x = x_min
+            y = y_min
+            w = max(0, x_max - x_min)
+            h = max(0, y_max - y_min)
             
             # Convert embedding numpy array to a list
             embedding = face.embedding.tolist()

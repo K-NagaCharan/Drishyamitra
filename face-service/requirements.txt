@@ -6,3 +6,4 @@ numpy
 python-dotenv
 insightface
 onnxruntime
+requests
