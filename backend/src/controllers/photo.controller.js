@@ -3,6 +3,9 @@ import * as photoService from "../services/photo.service.js";
 import Photo from "../models/Photo.js";
 import Face from "../models/Face.js";
 import Person from "../models/Person.js";
+import DeliveryHistory from "../models/DeliveryHistory.js";
+import redis from "../config/redis.js";
+import { env } from "../config/env.js";
 import { successResponse, errorResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { logger } from "../config/logger.js";
@@ -32,10 +35,14 @@ export const uploadPhoto = asyncHandler(async (req, res) => {
     width: uploadResult.width,
     height: uploadResult.height,
     bytes: uploadResult.bytes,
-    status: "completed"
+    status: "completed",
+    originalName: req.file.originalname
   });
 
   await photo.save();
+
+  // Clear stats cache
+  redis.del(`stats:${req.user._id}`).catch(err => logger.error({ err: err.message }, "Failed to clear stats cache"));
 
   logger.info({ requestId: req.id, photoId: photo._id }, "Photo registered in MongoDB");
 
@@ -155,6 +162,9 @@ export const deletePhoto = asyncHandler(async (req, res) => {
     }
   }
 
+  // Clear stats cache
+  redis.del(`stats:${req.user._id}`).catch(err => logger.error({ err: err.message }, "Failed to clear stats cache"));
+
   logger.info({ requestId: req.id, photoId: photo._id }, "Photo successfully deleted from database");
 
   return successResponse(res, null, "Photo deleted successfully");
@@ -228,6 +238,9 @@ export const bulkDeletePhotos = asyncHandler(async (req, res) => {
     }
   }
 
+  // Clear stats cache
+  redis.del(`stats:${req.user._id}`).catch(err => logger.error({ err: err.message }, "Failed to clear stats cache"));
+
   logger.info({ requestId: req.id, count: ownedIds.length }, "Photos successfully deleted in bulk from database");
 
   return res.status(200).json({
@@ -283,4 +296,134 @@ export const getPhotoDetails = asyncHandler(async (req, res) => {
 
   return successResponse(res, formattedPhoto, "Photo details retrieved successfully");
 });
+
+/**
+ * Retrieve aggregated photo stats and recent activities for the authenticated user
+ */
+export const getPhotoStats = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  const cacheKey = `stats:${userId}`;
+
+  try {
+    const cachedData = await redis.get(cacheKey);
+    if (cachedData) {
+      return successResponse(res, JSON.parse(cachedData), "Statistics retrieved from cache");
+    }
+  } catch (err) {
+    logger.error({ err: err.message }, "Redis error reading stats cache");
+  }
+
+  // Aggregate storage size
+  const storageStatsPromise = Photo.aggregate([
+    { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+    { $group: { _id: null, totalBytes: { $sum: { $ifNull: ["$bytes", 0] } } } }
+  ]);
+
+  // Execute queries in parallel
+  const [
+    photosCount,
+    peopleCount,
+    facesCount,
+    unlabeledFacesCount,
+    storageStats,
+    lastPhoto,
+    recentPhotos,
+    recentPeople,
+    recentDeliveries
+  ] = await Promise.all([
+    Photo.countDocuments({ userId }),
+    Person.countDocuments({ userId }),
+    Face.countDocuments({ userId }),
+    Face.countDocuments({ userId, isLabeled: false }),
+    storageStatsPromise,
+    Photo.findOne({ userId }).sort({ uploadDate: -1 }).lean(),
+    Photo.find({ userId }).sort({ uploadDate: -1 }).limit(5).lean(),
+    Person.find({ userId }).sort({ createdAt: -1 }).limit(5).lean(),
+    DeliveryHistory.find({ userId }).sort({ createdAt: -1 }).limit(5).lean()
+  ]);
+
+  const storageBytes = storageStats.length > 0 ? storageStats[0].totalBytes : 0;
+  const storageLimitBytes = env.STORAGE_LIMIT_BYTES || 10737418240; // 10 GB fallback
+  const storagePercent = parseFloat(((storageBytes / storageLimitBytes) * 100).toFixed(1));
+
+  let lastUpload = null;
+  if (lastPhoto) {
+    lastUpload = {
+      filename: lastPhoto.originalName || lastPhoto.url.split("/").pop() || "Photo",
+      uploadedAt: lastPhoto.uploadDate
+    };
+  }
+
+  // Construct dynamic activity feed
+  const activities = [];
+
+  // 1. Photo uploads & face detections & embeddings
+  for (const p of recentPhotos) {
+    const filename = p.originalName || p.url.split("/").pop() || "Photo";
+    activities.push({
+      type: "upload",
+      message: `${filename} uploaded`,
+      timestamp: p.uploadDate
+    });
+    if (p.faceCount > 0) {
+      activities.push({
+        type: "detection",
+        message: `${p.faceCount} faces detected in ${filename}`,
+        timestamp: p.uploadDate
+      });
+      activities.push({
+        type: "embedding",
+        message: `Embeddings generated for ${p.faceCount} faces`,
+        timestamp: p.uploadDate
+      });
+    }
+  }
+
+  // 2. Labeled people
+  for (const person of recentPeople) {
+    activities.push({
+      type: "label",
+      message: `${person.name} labeled`,
+      timestamp: person.createdAt
+    });
+  }
+
+  // 3. Deliveries
+  for (const d of recentDeliveries) {
+    const statusText = d.status === "delivered" ? "completed" : d.status;
+    const mediumName = d.medium === "whatsapp" ? "WhatsApp" : "Email";
+    activities.push({
+      type: "delivery",
+      message: `${mediumName} delivery ${statusText}`,
+      timestamp: d.createdAt
+    });
+  }
+
+  // Sort chronologically (newest first) and limit to 5
+  activities.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  const recentActivities = activities.slice(0, 5);
+
+  const stats = {
+    photosCount,
+    peopleCount,
+    facesCount,
+    unlabeledFacesCount,
+    embeddingsCount: facesCount, // Reuse facesCount
+    storageBytes,
+    storageLimitBytes,
+    storagePercent,
+    lastUpload,
+    recentActivities
+  };
+
+  try {
+    // Cache the response for 30 seconds
+    await redis.set(cacheKey, JSON.stringify(stats), "EX", 30);
+  } catch (err) {
+    logger.error({ err: err.message }, "Redis error writing stats cache");
+  }
+
+  return successResponse(res, stats, "Statistics retrieved successfully");
+});
+
 

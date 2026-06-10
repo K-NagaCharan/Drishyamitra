@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Face from "../models/Face.js";
 import Person from "../models/Person.js";
+import redis from "../config/redis.js";
 import * as faceLabelingService from "../services/faceLabeling.service.js";
 import * as faceSuggestionService from "../services/faceSuggestion.service.js";
 import { successResponse, errorResponse } from "../utils/apiResponse.js";
@@ -93,6 +94,9 @@ export const labelFace = asyncHandler(async (req, res) => {
 
   try {
     const result = await faceLabelingService.labelFace(faceId, userId, personName);
+
+    // Clear stats cache
+    redis.del(`stats:${userId}`).catch(err => logger.error({ err: err.message }, "Failed to clear stats cache"));
 
     const duration = Date.now() - startTime;
 

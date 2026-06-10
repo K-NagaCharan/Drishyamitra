@@ -28,6 +28,9 @@ const PhotoSchema = new mongoose.Schema({
   bytes: {
     type: Number
   },
+  originalName: {
+    type: String
+  },
   faceCount: {
     type: Number,
     default: 0

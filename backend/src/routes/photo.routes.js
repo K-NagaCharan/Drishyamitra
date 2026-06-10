@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { uploadPhoto, getPhotos, deletePhoto, bulkDeletePhotos, getPhotoDetails } from "../controllers/photo.controller.js";
+import { uploadPhoto, getPhotos, deletePhoto, bulkDeletePhotos, getPhotoDetails, getPhotoStats } from "../controllers/photo.controller.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 import { uploadSingle } from "../middlewares/upload.middleware.js";
 import { validatePhotoId } from "../validators/photo.validator.js";
@@ -13,6 +13,7 @@ router.use(authMiddleware);
 
 router.post("/upload", uploadSingle, uploadPhoto);
 router.get("/", getPhotos);
+router.get("/stats", getPhotoStats);
 router.get("/:id", validatePhotoId, getPhotoDetails);
 router.delete("/:id", validatePhotoId, deletePhoto);
 router.post("/bulk-delete", bulkDeletePhotos);
