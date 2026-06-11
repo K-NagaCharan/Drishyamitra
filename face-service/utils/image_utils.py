@@ -1,17 +1,20 @@
 import requests
 import cv2
 import numpy as np
+import io
+from PIL import Image, ImageOps
 
 def download_image(url, timeout=20):
     """
-    Downloads an image from a URL and decodes it using OpenCV.
+    Downloads an image from a URL, auto-rotates it based on EXIF tags using PIL,
+    and converts it to an OpenCV BGR image array.
     
     Args:
         url (str): The URL of the image to download.
         timeout (int): Network timeout limit in seconds.
         
     Returns:
-        numpy.ndarray: The decoded BGR image array.
+        numpy.ndarray: The decoded and auto-rotated BGR image array.
         
     Raises:
         TimeoutError: If connection to image host times out.
@@ -30,8 +33,14 @@ def download_image(url, timeout=20):
         raise ConnectionError(f"Failed to retrieve image: {str(e)}") from e
         
     try:
-        image_array = np.asarray(bytearray(response.content), dtype=np.uint8)
-        img = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
+        # Load with PIL to fix EXIF orientation automatically
+        pil_img = Image.open(io.BytesIO(response.content))
+        pil_img = ImageOps.exif_transpose(pil_img)
+        
+        # Convert to OpenCV BGR format
+        if pil_img.mode != "RGB":
+            pil_img = pil_img.convert("RGB")
+        img = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
     except Exception as e:
         raise ValueError(f"Failed to parse image data: {str(e)}") from e
         

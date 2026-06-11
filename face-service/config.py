@@ -11,6 +11,6 @@ class Config:
     DETECTOR_BACKEND = os.getenv("DETECTOR_BACKEND", "retinaface")
     DISTANCE_METRIC = os.getenv("DISTANCE_METRIC", "cosine")
     LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
-    DETECTION_SIZE = int(os.getenv("DETECTION_SIZE", 1280))
-    MIN_DETECTION_SCORE = float(os.getenv("MIN_DETECTION_SCORE", 0.50))
+    DETECTION_SIZE = int(os.getenv("DETECTION_SIZE", 1024))
+    MIN_DETECTION_SCORE = float(os.getenv("MIN_DETECTION_SCORE", 0.40))
     MIN_FACE_SIZE = int(os.getenv("MIN_FACE_SIZE", 35))

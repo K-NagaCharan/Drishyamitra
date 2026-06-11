@@ -5,7 +5,7 @@ import { logger } from "../config/logger.js";
 // Create Axios client instance sharing baseUrl and timeout configuration
 export const client = axios.create({
   baseURL: env.FACE_SERVICE_URL,
-  timeout: 30000 // 30 seconds recognition timeout
+  timeout: 90000 // 90 seconds recognition timeout
 });
 
 /**
