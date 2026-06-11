@@ -8,6 +8,8 @@ import groq from "../config/groq.js";
 import { logger } from "../config/logger.js";
 import { MODELS } from "../config/models.js";
 import Person from "../models/Person.js";
+import { env } from "../config/env.js";
+import { circuitBreaker, recordFailureMetric, updateResponseTime } from "../services/aiHealth.service.js";
 
 const MAX_TOOL_DEPTH = 5;
 const MAX_MESSAGES = 20;
@@ -77,9 +79,10 @@ Rules:
 1. Only call tools when explicitly required by the user's request.
 2. For search queries, call 'searchPhotos'. Do NOT call delivery/zip tools unless explicitly asked to send/share.
 3. If asked to email or WhatsApp photos, call the corresponding tool.
-4. Resolve relative dates to absolute ISO dates.
+4. Resolve relative dates/time periods (e.g. 'last week', 'yesterday', 'January') to absolute ISO dates, but DO NOT provide fromDate or toDate unless a date/time reference was explicitly requested by the user.
 5. Match names in queries (like 'Jan') to labeled people.
-6. If the user explicitly asks to compress the photos, send a ZIP, or send as a ZIP archive, pass the format parameter as 'zip' when calling sendEmail or sendWhatsApp.`
+6. If the user explicitly asks to compress the photos, send a ZIP, or send as a ZIP archive, pass the format parameter as 'zip' when calling sendEmail or sendWhatsApp.
+7. Do not fill 'fromDate' or 'toDate' parameters in 'searchPhotos' unless the user's request explicitly specifies a date, time period, or relative date expression. If no time constraints are specified, omit these parameters entirely. Under no circumstances should you default empty or unspecified date ranges to today's date.`
   };
 
 
@@ -112,7 +115,7 @@ Rules:
       }, "Sending request payload to Groq");
 
       try {
-        response = await groq.chat.completions.create({
+        response = await callGroqWithRetryAndTimeout({
           model: activeModel,
           messages: groqMessages,
           tools: activeTools,
@@ -152,7 +155,7 @@ Rules:
           if (activeModel === MODELS.FAST && !rateLimitedModels.has(MODELS.REASONING)) {
             logger.warn({ err: err.message }, "Fast model tool execution failed due to Groq parser bug. Retrying with Reasoning model...");
             try {
-              response = await groq.chat.completions.create({
+              response = await callGroqWithRetryAndTimeout({
                 model: MODELS.REASONING,
                 messages: groqMessages,
                 tools: activeTools,
@@ -485,6 +488,119 @@ function parseFailedGeneration(failedGen) {
     logger.warn({ err: err.message, jsonStr }, "Failed to parse JSON from failed_generation manually");
     return null;
   }
+}
+
+/**
+ * Custom wrapper around Groq API calls to implement:
+ * 1. Circuit Breaker validation (fails fast if open)
+ * 2. Request timeout protection (Promise.race at 25 seconds)
+ * 3. Selective retry with exponential backoff on safe/transient errors
+ * 4. AI health metrics recording
+ */
+export async function callGroqWithRetryAndTimeout(groqParams) {
+  if (!circuitBreaker.checkCallAllowed()) {
+    const cbError = new Error("Circuit breaker is open. Groq is unreachable.");
+    cbError.name = "CircuitBreakerError";
+    throw cbError;
+  }
+
+  const startTime = Date.now();
+
+  // Controller-level request timeout (e.g. 25 seconds)
+  const timeoutMs = 25000;
+  const timeoutPromise = new Promise((_, reject) => {
+    setTimeout(() => {
+      const timeoutErr = new Error("Gateway timeout");
+      timeoutErr.name = "GatewayTimeoutError";
+      reject(timeoutErr);
+    }, timeoutMs);
+  });
+
+  const groqPromise = (async () => {
+    let attempt = 0;
+    const maxRetries = env.GROQ_MAX_RETRIES;
+    const initialDelay = env.GROQ_RETRY_DELAY_MS;
+
+    while (true) {
+      try {
+        const response = await groq.chat.completions.create(groqParams);
+        
+        // Success
+        circuitBreaker.recordSuccess();
+        updateResponseTime(Date.now() - startTime);
+        return response;
+      } catch (err) {
+        attempt++;
+        
+        const isRetryable = checkIsRetryable(err);
+        if (!isRetryable || attempt > maxRetries) {
+          circuitBreaker.recordFailure();
+          recordFailureMetric(err);
+          throw err;
+        }
+
+        const delay = initialDelay * Math.pow(2, attempt - 1);
+        logger.warn({ err: err.message, attempt, delay }, "Groq call hit transient error. Retrying with exponential backoff...");
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  })();
+
+  try {
+    return await Promise.race([groqPromise, timeoutPromise]);
+  } catch (err) {
+    if (err.name === "GatewayTimeoutError") {
+      circuitBreaker.recordFailure();
+      recordFailureMetric(err);
+    }
+    throw err;
+  }
+}
+
+/**
+ * Classify if an error is a safe transient failure that should be retried.
+ */
+function checkIsRetryable(err) {
+  const status = err.status || err.statusCode;
+  const errMsg = err.message?.toLowerCase() || "";
+  const errType = err.type?.toLowerCase() || "";
+  const errName = err.name?.toLowerCase() || "";
+
+  // Do NOT retry 400, 401, 403, 404, or invalid model requests
+  if (status === 400 || status === 401 || status === 403 || status === 404) {
+    return false;
+  }
+  if (
+    errMsg.includes("invalid model") || 
+    errMsg.includes("model not found") || 
+    errMsg.includes("unauthorized") || 
+    errMsg.includes("forbidden")
+  ) {
+    return false;
+  }
+
+  // Retry timeouts, rate limits, 5xx server errors, network errors
+  if (
+    status === 429 ||
+    status === 503 ||
+    status === 502 ||
+    status === 504 ||
+    status === 500 ||
+    errName.includes("timeout") ||
+    errType.includes("timeout") ||
+    errType.includes("APIConnection") ||
+    errMsg.includes("timeout") ||
+    errMsg.includes("timed out") ||
+    errMsg.includes("getaddrinfo") ||
+    errMsg.includes("econnreset") ||
+    errMsg.includes("enotfound") ||
+    errMsg.includes("etimedout") ||
+    errMsg.includes("fetch failed")
+  ) {
+    return true;
+  }
+
+  return false;
 }
 
 

@@ -35,6 +35,7 @@ app.use((req, res, next) => {
 
 // Map routes under versioned prefix
 app.use("/api/v1/health", healthRoutes);
+app.use("/health", healthRoutes);
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/photos", photoRoutes);
 app.use("/api/chat", chatRoutes);

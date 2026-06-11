@@ -20,11 +20,11 @@ export const TOOLS = [
           },
           fromDate: {
             type: "string",
-            description: "Start date for filtering photos in ISO format (YYYY-MM-DD)."
+            description: "Start date for filtering photos in ISO format (YYYY-MM-DD). Optional. Omit this parameter if no date/time range is specified in the user's request."
           },
           toDate: {
             type: "string",
-            description: "End date for filtering photos in ISO format (YYYY-MM-DD)."
+            description: "End date for filtering photos in ISO format (YYYY-MM-DD). Optional. Omit this parameter if no date/time range is specified in the user's request."
           },
           location: {
             type: "string",
