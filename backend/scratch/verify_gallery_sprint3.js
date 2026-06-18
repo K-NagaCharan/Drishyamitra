@@ -56,7 +56,7 @@ async function main() {
     _id: photoIdA1,
     userId: userIdA,
     url: "https://example.com/photoA1.jpg",
-    cloudinaryPublicId: "apes/photos/photoA1",
+    cloudinaryPublicId: "drishyamitra/photos/photoA1",
     width: 800,
     height: 600,
     status: "completed"
@@ -67,7 +67,7 @@ async function main() {
     _id: photoIdA2,
     userId: userIdA,
     url: "https://example.com/photoA2.jpg",
-    cloudinaryPublicId: "apes/photos/photoA2",
+    cloudinaryPublicId: "drishyamitra/photos/photoA2",
     width: 800,
     height: 600,
     status: "completed"
@@ -78,7 +78,7 @@ async function main() {
     _id: photoIdB1,
     userId: userIdB,
     url: "https://example.com/photoB1.jpg",
-    cloudinaryPublicId: "apes/photos/photoB1",
+    cloudinaryPublicId: "drishyamitra/photos/photoB1",
     width: 800,
     height: 600,
     status: "completed"

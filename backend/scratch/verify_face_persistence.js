@@ -31,7 +31,7 @@ async function main() {
       _id: dummyPhotoId1,
       userId: testUserId,
       url: "https://example.com/photo1.jpg",
-      cloudinaryPublicId: "apes/photos/photo1",
+      cloudinaryPublicId: "drishyamitra/photos/photo1",
       width: 800,
       height: 600,
       status: "completed"
@@ -42,7 +42,7 @@ async function main() {
       _id: dummyPhotoId2,
       userId: testUserId,
       url: "https://example.com/photo2.jpg",
-      cloudinaryPublicId: "apes/photos/photo2",
+      cloudinaryPublicId: "drishyamitra/photos/photo2",
       width: 800,
       height: 600,
       status: "completed"

@@ -1,4 +1,4 @@
-process.env.APES_TEST_MODE = "true";
+process.env.DRISHYAMITRA_TEST_MODE = "true";
 import { runAgent } from "../src/agent/agentLoop.js";
 import { clearSession, getSession } from "../src/services/session.service.js";
 import groq from "../src/config/groq.js";

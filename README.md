@@ -1,4 +1,4 @@
-#  APES: Agentic Photos Evaluation and Segregation System
+#  Drishyamitra: Agentic Photos Evaluation and Segregation System
 
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org/)
 [![Python](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://www.python.org/)
@@ -7,7 +7,7 @@
 [![Database](https://img.shields.io/badge/Database-MongoDB%20Atlas-47A248.svg)](https://www.mongodb.com/)
 [![Message Queue](https://img.shields.io/badge/Queue-Redis%20%2F%20BullMQ-red.svg)](https://redis.io/)
 
-APES is an AI-powered photo management system designed to bring intelligence and automation to how users organize, search, and share their digital memories. Instead of manual sorting, APES uses deep learning-based facial recognition, event-driven background queues, and natural language understanding to create an intuitive and efficient photo experience. 
+Drishyamitra is an AI-powered photo management system designed to bring intelligence and automation to how users organize, search, and share their digital memories. Instead of manual sorting, Drishyamitra uses deep learning-based facial recognition, event-driven background queues, and natural language understanding to create an intuitive and efficient photo experience. 
 
 ---
 
@@ -28,7 +28,7 @@ APES is an AI-powered photo management system designed to bring intelligence and
 
 ## 🏗️ System Architecture
 
-APES is designed as a polyglot microservice system. Below is the architectural diagram showing component interfaces, data storage, and external integrations:
+Drishyamitra is designed as a polyglot microservice system. Below is the architectural diagram showing component interfaces, data storage, and external integrations:
 
 ```mermaid
 graph TD
@@ -47,9 +47,9 @@ graph TD
 ## ✨ Key Features
 
 *   **🧠 Deep Learning Face Analysis:** Integrates **InsightFace (buffalo_l)** to extract 512-dimension face vectors. Leverages an IoU-based Non-Maximum Suppression (NMS) threshold of `0.70` to eliminate duplicate detections.
-*   **🏷️ Smart Face Labeling:** Features a custom overlay canvas for manual annotations. Once a face is labeled, APES calculates the average centroid embedding to automatically suggest and propagate matching labels on future uploads.
+*   **🏷️ Smart Face Labeling:** Features a custom overlay canvas for manual annotations. Once a face is labeled, Drishyamitra calculates the average centroid embedding to automatically suggest and propagate matching labels on future uploads.
 *   **💬 Conversational AI Chat:** Powered by Groq LPU with multi-model routing (`llama-3.1-8b-instant` for quick searches and `llama-3.3-70b-versatile` for complex tool-calling workflows). Built-in rate limit fallbacks and regex parsing fail-safes (`parseFailedGeneration`) ensure continuous performance.
-*   **📦 Intelligent Photo Delivery:** Distributes photos via Gmail (Nodemailer) and WhatsApp (via `whatsapp-web.js`). If photo payloads exceed standard constraints (e.g. 25MB for Gmail, 100MB for WhatsApp), APES dynamically prompts the user via Socket.io to compile them into an in-memory ZIP archive, uploads it to Cloudinary, and delivers a download proxy link.
+*   **📦 Intelligent Photo Delivery:** Distributes photos via Gmail (Nodemailer) and WhatsApp (via `whatsapp-web.js`). If photo payloads exceed standard constraints (e.g. 25MB for Gmail, 100MB for WhatsApp), Drishyamitra dynamically prompts the user via Socket.io to compile them into an in-memory ZIP archive, uploads it to Cloudinary, and delivers a download proxy link.
 *   **🧹 Auto-Cleanup Queue:** Utilizes **BullMQ** background queues for asynchronous processing. A recurring worker detects expired ZIP files from Cloudinary every 24 hours and purges database delivery references to reclaim storage.
 
 ---
@@ -57,7 +57,7 @@ graph TD
 ## 📁 Project Structure
 
 ```
-APES/
+Drishyamitra/
 ├── backend/                  # Node.js Express Server
 │   ├── src/
 │   │   ├── agent/            # Conversational AI agent loop (agentLoop.js)
@@ -112,7 +112,7 @@ Create a `.env` file in the **root** folder or configure individual `.env` files
 #### **Backend (`backend/.env`)**
 ```env
 PORT=5000
-MONGO_URI=mongodb://localhost:27017/apes
+MONGO_URI=mongodb://localhost:27017/drishyamitra
 REDIS_URL=redis://127.0.0.1:6379
 
 # JWT settings
@@ -265,7 +265,7 @@ VITE_SOCKET_URL=http://localhost:5000
 
 ## 🗄️ Database Schema Details
 
-APES implements MongoDB modeling to maintain performance and data integrity:
+Drishyamitra implements MongoDB modeling to maintain performance and data integrity:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐

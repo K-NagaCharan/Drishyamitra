@@ -54,7 +54,7 @@ def run_tests():
     # 4. Test Network Error (Non-existent Domain)
     print("Testing network error: non-existent domain...", end="", flush=True)
     try:
-        r = requests.post(f"{base_url}/recognize", json={"imageUrl": "http://nonexistent-domain-apes-test-12345.com/face.jpg"})
+        r = requests.post(f"{base_url}/recognize", json={"imageUrl": "http://nonexistent-domain-drishyamitra-test-12345.com/face.jpg"})
         assert r.status_code == 400, f"Expected 400, got {r.status_code}"
         data = r.json()
         assert data.get("status") == "error"

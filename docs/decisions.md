@@ -1,6 +1,6 @@
 # Engineering Decision Log
 
-This document lists the architectural decisions made for APES (Agentic Photos Evaluation and Segregation), the alternatives considered, and the technical justifications behind each selection.
+This document lists the architectural decisions made for Drishyamitra (Agentic Photos Evaluation and Segregation), the alternatives considered, and the technical justifications behind each selection.
 
 ---
 

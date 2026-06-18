@@ -18,7 +18,7 @@ const WELCOME_MESSAGE = {
   id: 'welcome-message',
   role: 'assistant',
   type: 'text',
-  content: "Hi! I'm APES AI.\n\nI can help you search your photos, organize memories, and deliver albums.\n\nHow can I help today?",
+  content: "Hi! I'm Drishyamitra AI.\n\nI can help you search your photos, organize memories, and deliver albums.\n\nHow can I help today?",
   timestamp: new Date().toISOString(),
   metadata: {}
 };
@@ -132,7 +132,7 @@ const Chat = () => {
         <div className="flex items-center justify-between border-b border-[#e8e4dc] py-3 select-none flex-shrink-0">
           <div>
             <h1 className="text-sm font-semibold text-[#0f0e0c] font-sans flex items-center">
-              APES AI Agent
+              Drishyamitra AI Agent
               <span className="w-1.5 h-1.5 bg-green-500 rounded-full ml-2 animate-pulse" />
             </h1>
             <p className="text-[10px] text-[#6b6760] font-mono">Sprint 2 Agent Interface</p>

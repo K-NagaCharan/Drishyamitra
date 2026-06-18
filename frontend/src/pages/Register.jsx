@@ -60,7 +60,7 @@ const Register = () => {
   return (
     <AuthLayout
       title="Create account"
-      subtitle="Initialize your developer credentials on the APES platform."
+      subtitle="Initialize your developer credentials on the Drishyamitra platform."
     >
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="space-y-2">

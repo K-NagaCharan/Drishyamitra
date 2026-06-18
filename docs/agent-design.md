@@ -237,7 +237,7 @@ When a payload exceeds limits, `pendingZipConfirmation` is initialized temporari
 
 ## 3. Orchestration & Bounded Loop Logic
 
-The agent loop executes inside [agentLoop.js](file:///d:/APES/backend/src/agent/agentLoop.js) using the following pipeline:
+The agent loop executes inside [agentLoop.js](file:///d:/Drishyamitra/backend/src/agent/agentLoop.js) using the following pipeline:
 
 1. **Session Load**: Reads session from Redis (default defaults initialized if missing).
 2. **Context Compacting**: To preserve the LLM context window and prevent token bloating, only the last `10` messages are prepended to the system prompt and sent to Groq.

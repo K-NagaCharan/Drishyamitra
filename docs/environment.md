@@ -1,6 +1,6 @@
-# APES — Environment Variables Reference Guide
+# Drishyamitra — Environment Variables Reference Guide
 
-This document lists and explains all configuration settings required to run the APES system components locally and in production.
+This document lists and explains all configuration settings required to run the Drishyamitra system components locally and in production.
 
 ---
 

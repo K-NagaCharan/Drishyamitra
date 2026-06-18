@@ -45,7 +45,7 @@ async function runTests() {
       photoIds: [new mongoose.Types.ObjectId()],
       format: "zip",
       zipUrl: "https://cloudinary/expired-archive.zip",
-      cloudinaryPublicId: "apes/deliveries/expired-archive",
+      cloudinaryPublicId: "drishyamitra/deliveries/expired-archive",
       status: "delivered",
       deliveredAt: new Date(Date.now() - 30 * 60 * 60 * 1000)
     });
@@ -53,7 +53,7 @@ async function runTests() {
 
     // Stub Cloudinary uploader.destroy success
     cleanupHelpers.destroyCloudinaryAsset = async (publicId) => {
-      assert(publicId === "apes/deliveries/expired-archive", "Should call destroy with correct publicId");
+      assert(publicId === "drishyamitra/deliveries/expired-archive", "Should call destroy with correct publicId");
       return { result: "ok" };
     };
 
@@ -80,7 +80,7 @@ async function runTests() {
       photoIds: [new mongoose.Types.ObjectId()],
       format: "zip",
       zipUrl: "https://cloudinary/active-archive.zip",
-      cloudinaryPublicId: "apes/deliveries/active-archive",
+      cloudinaryPublicId: "drishyamitra/deliveries/active-archive",
       status: "delivered",
       deliveredAt: new Date(Date.now() - 1 * 60 * 60 * 1000)
     });
@@ -97,7 +97,7 @@ async function runTests() {
     // Verify record remains intact
     const checkedRecord2 = await DeliveryHistory.findById(activeRecord._id);
     assert(checkedRecord2.zipUrl === "https://cloudinary/active-archive.zip", "Active archive zipUrl must remain");
-    assert(checkedRecord2.cloudinaryPublicId === "apes/deliveries/active-archive", "Active archive public ID must remain");
+    assert(checkedRecord2.cloudinaryPublicId === "drishyamitra/deliveries/active-archive", "Active archive public ID must remain");
     assert(checkedRecord2.zipDeletedAt === undefined || checkedRecord2.zipDeletedAt === null, "Active record zipDeletedAt must not be set");
     logger.info("Scenario 2 passed.");
 
@@ -114,7 +114,7 @@ async function runTests() {
       photoIds: [new mongoose.Types.ObjectId()],
       format: "zip",
       zipUrl: "https://cloudinary/missing-archive.zip",
-      cloudinaryPublicId: "apes/deliveries/missing-archive",
+      cloudinaryPublicId: "drishyamitra/deliveries/missing-archive",
       status: "delivered",
       deliveredAt: new Date(Date.now() - 30 * 60 * 60 * 1000)
     });
@@ -122,7 +122,7 @@ async function runTests() {
 
     // Stub Cloudinary uploader.destroy to return not found
     cleanupHelpers.destroyCloudinaryAsset = async (publicId) => {
-      assert(publicId === "apes/deliveries/missing-archive", "Should call with correct publicId");
+      assert(publicId === "drishyamitra/deliveries/missing-archive", "Should call with correct publicId");
       return { result: "not found" };
     };
 
@@ -149,7 +149,7 @@ async function runTests() {
       photoIds: [new mongoose.Types.ObjectId()],
       format: "zip",
       zipUrl: "https://cloudinary/retry-archive.zip",
-      cloudinaryPublicId: "apes/deliveries/retry-archive",
+      cloudinaryPublicId: "drishyamitra/deliveries/retry-archive",
       status: "delivered",
       deliveredAt: new Date(Date.now() - 30 * 60 * 60 * 1000)
     });

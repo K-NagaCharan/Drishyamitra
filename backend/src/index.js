@@ -9,7 +9,7 @@ import { initAllWorkers, closeAllWorkers } from "./workers/index.js";
 import { initializeWhatsApp, shutdownWhatsApp } from "./services/whatsapp.service.js";
 
 const startServer = async () => {
-  logger.info(`Starting APES Backend in ${env.NODE_ENV} mode...`);
+  logger.info(`Starting Drishyamitra Backend in ${env.NODE_ENV} mode...`);
 
   // Connect to database before listening (trigger restart)
   await connectDB();

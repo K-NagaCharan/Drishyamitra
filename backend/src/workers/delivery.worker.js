@@ -26,7 +26,7 @@ export const deliverPhotos = async (data) => {
   if (medium === "email") {
     result = await deliveryHelpers.sendEmail({
       recipient,
-      subject: format === "zip" ? "Your Shared Photos ZIP from APES" : "Your Shared Photos from APES",
+      subject: format === "zip" ? "Your Shared Photos ZIP from Drishyamitra" : "Your Shared Photos from Drishyamitra",
       photos: photoIds,
       zipUrl: format === "zip" ? zipUrl : null
     });
@@ -85,19 +85,19 @@ export const deliveryHelpers = {
         .join("\n");
 
       const mailOptions = {
-        from: `"APES Photo Ingestor" <${env.GMAIL_USER}>`,
+        from: `"Drishyamitra Photo Ingestor" <${env.GMAIL_USER}>`,
         to: recipient,
-        subject: "Your Shared Photos from APES",
+        subject: "Your Shared Photos from Drishyamitra",
         html: `
           <div style="font-family: sans-serif; padding: 20px; color: #0f0e0c; background-color: #faf9f6; border: 1px solid #e8e4dc; border-radius: 8px; max-width: 600px;">
             <h2 style="font-family: serif; color: #c8501a; margin-top: 0;">Here are your shared photos!</h2>
-            <p>You requested to share ${photoIds.length} photo(s) from your APES gallery.</p>
+            <p>You requested to share ${photoIds.length} photo(s) from your Drishyamitra gallery.</p>
             <ul style="padding-left: 20px;">
               ${photoLinks}
             </ul>
             <br/>
             <p style="font-size: 11px; color: #6b6760; border-top: 1px solid #e8e4dc; padding-top: 10px; margin-top: 20px;">
-              This is an automated notification from APES (Agentic Photos Evaluation & Segregation).
+              This is an automated notification from Drishyamitra (Agentic Photos Evaluation & Segregation).
             </p>
           </div>
         `

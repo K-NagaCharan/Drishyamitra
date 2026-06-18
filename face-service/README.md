@@ -1,6 +1,6 @@
 # Face Recognition Microservice
 
-This is the Python microservice responsible for running face detection and face embedding generation for the APES system. It uses [InsightFace](https://github.com/deepinsight/insightface) under the hood with the `buffalo_l` model for face bounding box localization and 512-dimensional embedding extraction, and incorporates an IoU-based Non-Maximum Suppression (NMS) deduplication algorithm (threshold: 0.70) to prevent duplicate face records.
+This is the Python microservice responsible for running face detection and face embedding generation for the Drishyamitra system. It uses [InsightFace](https://github.com/deepinsight/insightface) under the hood with the `buffalo_l` model for face bounding box localization and 512-dimensional embedding extraction, and incorporates an IoU-based Non-Maximum Suppression (NMS) deduplication algorithm (threshold: 0.70) to prevent duplicate face records.
 
 ## Project Structure
 

@@ -121,7 +121,7 @@ export async function downloadZipHandler(req, res) {
 
     // Set response headers to force download with proper filename
     res.setHeader("Content-Type", "application/zip");
-    res.setHeader("Content-Disposition", `attachment; filename="apes_photos_${deliveryId}.zip"`);
+    res.setHeader("Content-Disposition", `attachment; filename="drishyamitra_photos_${deliveryId}.zip"`);
 
     // Stream error handling
     response.data.on("error", (err) => {

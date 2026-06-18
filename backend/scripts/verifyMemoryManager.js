@@ -53,13 +53,13 @@ const runVerification = async () => {
   await updateAgentMemory({
     userId: TEST_USER_ID,
     toolName: "sendEmail",
-    toolArgs: { photoIds: ["photo_001"], email: "test@apes.com" }
+    toolArgs: { photoIds: ["photo_001"], email: "test@drishyamitra.com" }
   });
   session = await getSession(TEST_USER_ID);
   assert(session.memory.lastDelivery !== null, "lastDelivery is set");
   assert(session.memory.lastDelivery.method === "email", "method is email");
   assert(JSON.stringify(session.memory.lastDelivery.photoIds) === JSON.stringify(["photo_001"]), "photoIds matches");
-  assert(session.memory.lastDelivery.destination === "test@apes.com", "destination email matches");
+  assert(session.memory.lastDelivery.destination === "test@drishyamitra.com", "destination email matches");
   
   // Verify date is valid ISO string
   const timestamp = session.memory.lastDelivery.timestamp;

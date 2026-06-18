@@ -29,7 +29,7 @@ const AppLayout = () => {
         <div className="flex items-center space-x-6">
           <div className="flex items-center space-x-2">
             <span className="font-serif italic text-2xl tracking-tight text-[#0f0e0c]">
-              APES<span className="text-[#c8501a] not-italic">.</span>
+              Drishyamitra<span className="text-[#c8501a] not-italic">.</span>
             </span>
           </div>
 

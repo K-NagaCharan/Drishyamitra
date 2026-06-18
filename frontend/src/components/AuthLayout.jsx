@@ -3,7 +3,7 @@ import React from 'react';
 const AuthLayout = ({ children, title, subtitle }) => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#faf9f6] p-4 font-sans selection:bg-[#c8501a] selection:text-white relative overflow-hidden">
-      {/* Decorative blurred background shapes for depth */}
+      {/* Decorative blurred background shdrishyamitra for depth */}
       <div className="absolute top-20 left-20 w-72 h-72 bg-[#fdf0ea] rounded-full filter blur-3xl opacity-60 animate-pulse"></div>
       <div className="absolute bottom-20 right-20 w-80 h-80 bg-[#eeedfe] rounded-full filter blur-3xl opacity-60 animate-pulse"></div>
 
@@ -18,7 +18,7 @@ const AuthLayout = ({ children, title, subtitle }) => {
               System Core — v1.0
             </span>
             <h1 className="font-serif italic text-4xl mt-6 text-[#faf9f6]">
-              APES<span className="text-[#c8501a] not-italic">.</span>
+              Drishyamitra<span className="text-[#c8501a] not-italic">.</span>
             </h1>
             <p className="text-[#9c9890] text-xs mt-2 font-mono uppercase tracking-widest leading-relaxed">
               Agentic Photos Evaluation & Segregation
@@ -37,7 +37,7 @@ const AuthLayout = ({ children, title, subtitle }) => {
           </div>
 
           <div className="relative z-10 text-[10px] text-[#6b6760] font-mono">
-            © 2026 APES Core. All rights reserved.
+            © 2026 Drishyamitra Core. All rights reserved.
           </div>
         </div>
 

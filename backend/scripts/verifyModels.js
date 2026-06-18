@@ -13,7 +13,7 @@ const runVerification = async () => {
   await connectDB();
 
   // Clear previous test residue if any
-  const testEmail = "verify_test_user_model@apes.com";
+  const testEmail = "verify_test_user_model@drishyamitra.com";
   await User.deleteMany({ email: testEmail });
 
   let testUser;

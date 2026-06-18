@@ -1,4 +1,4 @@
-# APES — API Contracts and Socket.io Events
+# Drishyamitra — API Contracts and Socket.io Events
 
 This document details the REST endpoint structures, authentication requirements, request/response models, internal microservice schemas, and Socket.io event telemetry.
 

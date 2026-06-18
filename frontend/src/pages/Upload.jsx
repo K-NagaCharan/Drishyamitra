@@ -37,7 +37,7 @@ const Upload = () => {
           Upload Photos
         </h1>
         <p className="text-sm text-[#6b6760] leading-relaxed">
-          Add new images to your repository. APES will automatically validate format configurations.
+          Add new images to your repository. Drishyamitra will automatically validate format configurations.
         </p>
       </section>
 

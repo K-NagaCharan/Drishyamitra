@@ -4,7 +4,7 @@ import { initAllWorkers, closeAllWorkers } from "./src/workers/index.js";
 import mongoose from "mongoose";
 
 async function startWorkerProcess() {
-  logger.info("Starting APES worker process...");
+  logger.info("Starting Drishyamitra worker process...");
 
   // 1. Establish MongoDB connection
   await connectDB();

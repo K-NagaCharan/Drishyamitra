@@ -14,7 +14,7 @@ export const FullPageLoader = () => {
         
         {/* Sleek brand typography */}
         <div className="font-serif italic text-2xl text-[#0f0e0c] animate-pulse">
-          APES<span className="text-[#c8501a] not-italic">.</span>
+          Drishyamitra<span className="text-[#c8501a] not-italic">.</span>
         </div>
         <p className="text-xs font-mono uppercase tracking-widest text-[#6b6760] animate-pulse">
           Initializing Session

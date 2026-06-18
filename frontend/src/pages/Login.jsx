@@ -41,7 +41,7 @@ const Login = () => {
 
   return (
     <AuthLayout
-      title="Sign in to APES"
+      title="Sign in to Drishyamitra"
       subtitle="Welcome back. Enter your credentials to access the console."
     >
       <form onSubmit={handleSubmit} className="space-y-6">

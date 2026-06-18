@@ -4,7 +4,7 @@ import path from "path";
 
 dotenv.config({ path: path.resolve(".env") });
 
-const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/apes";
+const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/drishyamitra";
 
 async function run() {
   console.log("Connecting to:", MONGO_URI);

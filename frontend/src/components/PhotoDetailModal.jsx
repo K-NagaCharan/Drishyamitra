@@ -189,7 +189,7 @@ const PhotoDetailModal = ({ photoId, onClose, onPrev, onNext }) => {
     if (!data) return;
     const link = document.createElement('a');
     link.href = data.url;
-    link.download = `apes-photo-${data.id}.jpg`;
+    link.download = `drishyamitra-photo-${data.id}.jpg`;
     link.target = '_blank';
     document.body.appendChild(link);
     link.click();

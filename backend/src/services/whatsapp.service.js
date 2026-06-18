@@ -145,7 +145,7 @@ export async function sendWhatsApp({ recipient, photos, text, zipUrl }) {
   if (text && typeof text === "string" && text.trim() !== "") {
     message = text;
   } else if (zipUrl) {
-    message = `Here is the ZIP archive containing the shared photos you requested from your APES gallery:\n\n${zipUrl}\n\nThis is an automated notification from APES.`;
+    message = `Here is the ZIP archive containing the shared photos you requested from your Drishyamitra gallery:\n\n${zipUrl}\n\nThis is an automated notification from Drishyamitra.`;
   } else {
     if (!photos || !Array.isArray(photos)) {
       throw new WhatsAppServiceError("Either text, zipUrl, or photos array must be provided");
@@ -164,7 +164,7 @@ export async function sendWhatsApp({ recipient, photos, text, zipUrl }) {
       throw new WhatsAppServiceError("No valid photo links found in photos array");
     }
 
-    message = `Here are the shared photos you requested from your APES gallery:\n\n${photoLinks}\n\nThis is an automated notification from APES.`;
+    message = `Here are the shared photos you requested from your Drishyamitra gallery:\n\n${photoLinks}\n\nThis is an automated notification from Drishyamitra.`;
   }
 
   try {

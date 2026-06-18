@@ -13,7 +13,7 @@ const runVerification = async () => {
   await connectDB();
 
   // Clear any existing test user
-  const testEmail = "verify_auth_test_user@apes.com";
+  const testEmail = "verify_auth_test_user@drishyamitra.com";
   await User.deleteMany({ email: testEmail });
 
   // Start temporary testing server on an alternative port

@@ -56,7 +56,7 @@ async function main() {
       _id: photoIdA,
       userId: userIdA,
       url: "https://example.com/testphoto.jpg",
-      cloudinaryPublicId: "apes/photos/testphoto",
+      cloudinaryPublicId: "drishyamitra/photos/testphoto",
       width: 1000,
       height: 800,
       status: "completed"

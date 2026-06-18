@@ -1,12 +1,12 @@
-# APES — System Architecture
+# Drishyamitra — System Architecture
 
-This document describes the high-level design, component boundaries, background processing systems, and core workflows of the APES (Agentic Photos Evaluation and Segregation) system.
+This document describes the high-level design, component boundaries, background processing systems, and core workflows of the Drishyamitra (Agentic Photos Evaluation and Segregation) system.
 
 ---
 
 ## 1. System Overview
 
-APES is structured as a polyglot microservice architecture designed to handle photo storage, automatic face recognition, natural language retrieval, and action dispatching.
+Drishyamitra is structured as a polyglot microservice architecture designed to handle photo storage, automatic face recognition, natural language retrieval, and action dispatching.
 
 ```mermaid
 graph TD
@@ -33,7 +33,7 @@ graph TD
 
 ## 2. Background Queue & Worker Architecture
 
-To prevent long-running tasks from blocking the Express event loop, APES uses a Redis-backed **BullMQ** job pipeline:
+To prevent long-running tasks from blocking the Express event loop, Drishyamitra uses a Redis-backed **BullMQ** job pipeline:
 
 ```
 [Express API]

@@ -157,7 +157,7 @@ async function runTests() {
 
     logger.info(zipResult, "ZIP Generation Result");
     assert(zipResult.zipUrl && typeof zipResult.zipUrl === "string", "zipUrl should be a string");
-    assert(zipResult.cloudinaryPublicId && zipResult.cloudinaryPublicId.startsWith("apes/deliveries/"), "cloudinaryPublicId should be in deliveries folder");
+    assert(zipResult.cloudinaryPublicId && zipResult.cloudinaryPublicId.startsWith("drishyamitra/deliveries/"), "cloudinaryPublicId should be in deliveries folder");
     assert(zipResult.fileSize > 0, "fileSize should be greater than 0");
     assert(zipResult.photoCount === 2, "photoCount should be 2");
 

@@ -50,7 +50,7 @@ const ChatInput = ({ onSend, loading, inputRef }) => {
         value={text}
         onChange={(e) => setText(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder={loading ? 'APES AI is thinking...' : 'Ask APES anything...'}
+        placeholder={loading ? 'Drishyamitra AI is thinking...' : 'Ask Drishyamitra anything...'}
         disabled={loading}
         className="flex-grow resize-none bg-transparent outline-none text-sm max-h-[150px] min-h-[24px] py-1 text-[#0f0e0c] placeholder-[#6b6760] font-sans overflow-y-auto"
       />

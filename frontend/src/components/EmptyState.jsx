@@ -18,7 +18,7 @@ const EmptyState = () => {
           No photos found.
         </h3>
         <p className="text-sm text-[#6b6760] leading-relaxed max-w-sm">
-          Upload your first photo to start building your gallery. Let APES scan faces and compile embeddings.
+          Upload your first photo to start building your gallery. Let Drishyamitra scan faces and compile embeddings.
         </p>
       </div>
 

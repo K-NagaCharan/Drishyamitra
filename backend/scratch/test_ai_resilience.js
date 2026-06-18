@@ -43,7 +43,7 @@ const runTests = async () => {
   console.log("=== Starting Groq Integration Resilience Unit Tests ===\n");
 
   // Set test mode to bypass DB queries inside agentLoop
-  process.env.APES_TEST_MODE = "true";
+  process.env.DRISHYAMITRA_TEST_MODE = "true";
 
   // Setup database connection so Mongoose queries don't buffer/timeout
   await connectDB();

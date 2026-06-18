@@ -22,8 +22,8 @@ const runVerification = async () => {
   await connectDB();
 
   // Clear previous test users if any
-  const emailA = "tester_photo_a@apes.com";
-  const emailB = "tester_photo_b@apes.com";
+  const emailA = "tester_photo_a@drishyamitra.com";
+  const emailB = "tester_photo_b@drishyamitra.com";
   await User.deleteMany({ email: { $in: [emailA, emailB] } });
 
   // Start temporary server

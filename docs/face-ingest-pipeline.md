@@ -1,4 +1,4 @@
-# APES — Face Ingest & Recognition Pipeline
+# Drishyamitra — Face Ingest & Recognition Pipeline
 
 This document describes the end-to-end processing pipeline for uploaded photos, face detection, embedding matching, and label propagation.
 

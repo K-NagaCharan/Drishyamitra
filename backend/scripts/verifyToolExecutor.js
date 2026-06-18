@@ -36,7 +36,7 @@ const runVerification = async () => {
 
   // 4. Test sendEmail
   logger.info("Testing sendEmail...");
-  const emailResult = await executeTool("sendEmail", { photoIds: ["photo_001"], email: "test@apes.com" });
+  const emailResult = await executeTool("sendEmail", { photoIds: ["photo_001"], email: "test@drishyamitra.com" });
   assert(typeof emailResult === "object", "sendEmail returns object");
   assert(emailResult.success === true, "sendEmail success is true");
   assert(emailResult.message === "Email queued successfully.", "sendEmail message is correct");

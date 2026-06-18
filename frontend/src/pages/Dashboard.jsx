@@ -94,7 +94,7 @@ const Dashboard = () => {
 
   return (
     <div className="flex-grow flex flex-col justify-center relative select-none">
-      {/* Decorative blurred background shapes */}
+      {/* Decorative blurred background shdrishyamitra */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-[#fdf0ea] rounded-full filter blur-3xl opacity-50 pointer-events-none text-transparent">.</div>
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#eeedfe] rounded-full filter blur-3xl opacity-50 pointer-events-none text-transparent">.</div>
 

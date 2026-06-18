@@ -1,12 +1,12 @@
-# APES — System Features & Storage Lifecycle
+# Drishyamitra — System Features & Storage Lifecycle
 
-This document describes the visual interface maps, file storage pipelines, and advanced agent routing features implemented in the APES system.
+This document describes the visual interface maps, file storage pipelines, and advanced agent routing features implemented in the Drishyamitra system.
 
 ---
 
 ## 1. Frontend Application Map
 
-The React web client ([AppRouter.jsx](file:///d:/APES/frontend/src/router/AppRouter.jsx)) registers the following pages and interface utilities:
+The React web client ([AppRouter.jsx](file:///d:/Drishyamitra/frontend/src/router/AppRouter.jsx)) registers the following pages and interface utilities:
 
 ### A. Dashboard View (`/dashboard`)
 * **Real-time Status Badge**: Displays Socket.io API connection state (`Connected` / `Offline`).
@@ -36,7 +36,7 @@ The React web client ([AppRouter.jsx](file:///d:/APES/frontend/src/router/AppRou
 
 ## 2. Storage Lifecycle & ZIP Delivery Workflows
 
-APES manages photo sharing, file size constraints, and storage reclamation without local disk dependencies:
+Drishyamitra manages photo sharing, file size constraints, and storage reclamation without local disk dependencies:
 
 ```
 [Direct Photo Links] ◄──── [Email/WhatsApp Request] ────► [Size Check (>25MB Email / >100MB WA)]
@@ -74,7 +74,7 @@ APES manages photo sharing, file size constraints, and storage reclamation witho
 
 ### C. Download Proxy Endpoint
 - The route `GET /api/v1/delivery/download/:deliveryId` proxy-streams the ZIP file directly from Cloudinary.
-- Sets the headers `Content-Type: application/zip` and `Content-Disposition: attachment; filename="apes_photos_[id].zip"`, renaming the extensionless Cloudinary Raw asset for the user.
+- Sets the headers `Content-Type: application/zip` and `Content-Disposition: attachment; filename="drishyamitra_photos_[id].zip"`, renaming the extensionless Cloudinary Raw asset for the user.
 
 ### D. Scheduled Cleanup Worker
 - To reclaim cloud storage, a repeatable BullMQ job (`cleanup-expired-zips` inside `cleanupZipQueue`) runs every 24 hours.
@@ -86,7 +86,7 @@ APES manages photo sharing, file size constraints, and storage reclamation witho
 
 ## 3. Groq Agent Fallback Routing & Parsing Fail-safes
 
-The conversational agent in [agentLoop.js](file:///d:/APES/backend/src/agent/agentLoop.js) employs structural resilience:
+The conversational agent in [agentLoop.js](file:///d:/Drishyamitra/backend/src/agent/agentLoop.js) employs structural resilience:
 
 ### A. Model Selection Heuristics
 - Messages are evaluated before routing:

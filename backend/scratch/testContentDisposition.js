@@ -12,7 +12,7 @@ async function main() {
   const uploadResult = await new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       {
-        folder: "apes/deliveries",
+        folder: "drishyamitra/deliveries",
         public_id: zipFilename,
         resource_type: "raw",
         content_disposition: "attachment; filename=shared_photos.zip"

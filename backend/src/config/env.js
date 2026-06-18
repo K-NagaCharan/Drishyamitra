@@ -23,7 +23,7 @@ if (missingVars.length > 0) {
 
 export const env = {
   PORT: process.env.PORT || 5000,
-  MONGO_URI: process.env.MONGO_URI || "mongodb://localhost:27017/apes",
+  MONGO_URI: process.env.MONGO_URI || "mongodb://localhost:27017/drishyamitra",
   REDIS_URL: process.env.REDIS_URL || "redis://localhost:6379",
   GROQ_API_KEY: process.env.GROQ_API_KEY || "",
   GROQ_FAST_MODEL: process.env.GROQ_FAST_MODEL || "llama-3.1-8b-instant",

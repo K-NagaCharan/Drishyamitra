@@ -30,7 +30,7 @@ export const uploadStream = (fileBuffer) => {
       logger.info("Cloudinary is not configured. Falling back to mock upload.");
       return Promise.resolve({
         secure_url: "https://res.cloudinary.com/dxgl7wq2e/image/upload/v1780994444/apes/photos/csferaoodlqmujzx6ti4.jpg",
-        public_id: "apes/photos/mock_public_id_abc123",
+        public_id: "drishyamitra/photos/mock_public_id_abc123",
         width: 1200,
         height: 800,
         bytes: 1048576 // 1 MB mock size
@@ -44,7 +44,7 @@ export const uploadStream = (fileBuffer) => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       { 
-        folder: "apes/photos",
+        folder: "drishyamitra/photos",
         resource_type: "image"
       },
       (error, result) => {

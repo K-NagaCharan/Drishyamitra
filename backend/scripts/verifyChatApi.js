@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 import { env } from "../src/config/env.js";
 import groq from "../src/config/groq.js";
 
-const TEST_USER_EMAIL = "verify_chat_api_user@apes.com";
+const TEST_USER_EMAIL = "verify_chat_api_user@drishyamitra.com";
 
 const assert = (condition, message) => {
   if (!condition) {

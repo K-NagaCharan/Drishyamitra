@@ -10,7 +10,7 @@ import jwt from "jsonwebtoken";
 import { env } from "../src/config/env.js";
 import groq from "../src/config/groq.js";
 
-const TEST_USER_EMAIL = "verify_cards_api_user@apes.com";
+const TEST_USER_EMAIL = "verify_cards_api_user@drishyamitra.com";
 
 const assert = (condition, message) => {
   if (!condition) {
@@ -75,7 +75,7 @@ const runVerification = async () => {
     _id: new mongoose.Types.ObjectId("60c72b2f9b1d8b2bad689d99"),
     userId: testUser._id,
     url: "https://res.cloudinary.com/dxgl7wq2e/image/upload/v1780996807/apes/photos/it9r9ttnr9or2omdm4fk.jpg",
-    cloudinaryPublicId: "apes/photos/testphoto",
+    cloudinaryPublicId: "drishyamitra/photos/testphoto",
     width: 800,
     height: 600,
     status: "completed",

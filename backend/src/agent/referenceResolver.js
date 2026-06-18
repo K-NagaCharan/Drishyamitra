@@ -10,9 +10,8 @@ import { logger } from "../config/logger.js";
  * @returns {object} { success: boolean, photoIds?: Array<string>, error?: string }
  */
 export function resolvePhotoReferences(session, photoIds) {
-  // If photoIds are explicitly provided, verify if they are valid ObjectIds
   if (Array.isArray(photoIds) && photoIds.length > 0) {
-    const isTestMode = process.env.APES_TEST_MODE === "true";
+    const isTestMode = process.env.DRISHYAMITRA_TEST_MODE === "true";
     const hasValidIds = isTestMode || photoIds.every(id => mongoose.Types.ObjectId.isValid(id));
 
     if (hasValidIds) {

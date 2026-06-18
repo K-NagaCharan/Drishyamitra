@@ -1,7 +1,7 @@
 {
-  "name": "apes-backend",
+  "name": "drishyamitra-backend",
   "version": "1.0.0",
-  "description": "Backend API orchestrator for APES (Agentic Photos Evaluation and Segregation)",
+  "description": "Backend API orchestrator for Drishyamitra (Agentic Photos Evaluation and Segregation)",
   "type": "module",
   "main": "src/index.js",
   "scripts": {

@@ -5,7 +5,7 @@ import User from "../src/models/User.js";
 import ChatHistory from "../src/models/ChatHistory.js";
 import { saveChatHistory, clearChatHistory } from "../src/services/chatHistory.service.js";
 
-const TEST_USER_EMAIL = "verify_chat_history_user@apes.com";
+const TEST_USER_EMAIL = "verify_chat_history_user@drishyamitra.com";
 
 const assert = (condition, message) => {
   if (!condition) {

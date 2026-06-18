@@ -146,7 +146,7 @@ async function runTests() {
       logger.info({ count: photos.length }, "Stubbed createZip called");
       return {
         zipUrl: "https://cloudinary/mock-zip-archive.zip",
-        cloudinaryPublicId: "apes/deliveries/mock-zip-archive",
+        cloudinaryPublicId: "drishyamitra/deliveries/mock-zip-archive",
         fileSize: 15000000,
         photoCount: photos.length
       };
@@ -182,7 +182,7 @@ async function runTests() {
     assert(initialZipRecord.status === "queued", "Record status should start as queued");
     assert(initialZipRecord.format === "zip", "Record format should be zip");
     assert(initialZipRecord.zipUrl === "https://cloudinary/mock-zip-archive.zip", "Record zipUrl should be saved");
-    assert(initialZipRecord.cloudinaryPublicId === "apes/deliveries/mock-zip-archive", "Record public ID should be saved");
+    assert(initialZipRecord.cloudinaryPublicId === "drishyamitra/deliveries/mock-zip-archive", "Record public ID should be saved");
 
     // Wait for worker to complete the job
     const jobDonePromise2 = new Promise((resolve) => {
@@ -201,7 +201,7 @@ async function runTests() {
     assert(finalZipRecord.status === "delivered", "Record status should be updated to delivered");
     assert(finalZipRecord.format === "zip", "Record format should remain zip");
     assert(finalZipRecord.zipUrl === "https://cloudinary/mock-zip-archive.zip", "Record zipUrl must be preserved");
-    assert(finalZipRecord.cloudinaryPublicId === "apes/deliveries/mock-zip-archive", "Record public ID must be preserved");
+    assert(finalZipRecord.cloudinaryPublicId === "drishyamitra/deliveries/mock-zip-archive", "Record public ID must be preserved");
     assert(finalZipRecord.messageId === "mock-email-message-id-zip", "Record messageId mismatch");
     logger.info("Scenario 3 passed.");
 
@@ -332,7 +332,7 @@ async function runTests() {
     zipHelpers.createZip = async ({ photos }) => {
       return {
         zipUrl: "https://cloudinary/mock-zip-error.zip",
-        cloudinaryPublicId: "apes/deliveries/mock-zip-error",
+        cloudinaryPublicId: "drishyamitra/deliveries/mock-zip-error",
         fileSize: 15000000,
         photoCount: photos.length
       };

@@ -47,7 +47,7 @@ async function main() {
       _id: photoId,
       userId,
       url: "https://res.cloudinary.com/demo/image/upload/v1234/apes/test.jpg",
-      cloudinaryPublicId: "apes/photos/test",
+      cloudinaryPublicId: "drishyamitra/photos/test",
       width: 1920,
       height: 1080,
       status: "completed"

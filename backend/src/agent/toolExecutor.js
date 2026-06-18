@@ -22,7 +22,7 @@ export async function executeTool(toolName, args, userId, session) {
   const safeArgs = args ?? {};
 
   // If in test mode, return mock data expected by verification scripts
-  if (process.env.APES_TEST_MODE === "true") {
+  if (process.env.DRISHYAMITRA_TEST_MODE === "true") {
     switch (toolName) {
       case "searchPhotos": {
         const person = (safeArgs.people && safeArgs.people.length > 0) ? safeArgs.people[0] : "Dad";

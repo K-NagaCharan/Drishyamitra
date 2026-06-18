@@ -61,9 +61,8 @@ export async function runAgent({ userId, message }) {
   // Pre-filter tools based on query context to keep prompt size optimized
   const activeTools = getRelevantTools(message, messages);
 
-  // Fetch user's labeled people names to guide the LLM mapping
   let peopleList = "";
-  if (process.env.APES_TEST_MODE === "true") {
+  if (process.env.DRISHYAMITRA_TEST_MODE === "true") {
     peopleList = "Dad, Mom, John";
   } else {
     const people = await Person.find({ userId }).select("name").lean();
@@ -73,7 +72,7 @@ export async function runAgent({ userId, message }) {
   // SYSTEM INSTRUCTIONS: Guide the LLM to follow tool invocation boundaries and prevent infinite loops.
   const systemPrompt = {
     role: "system",
-    content: `You are APES AI, a helpful photo assistant. Today is ${new Date().toISOString().split('T')[0]}.
+    content: `You are Drishyamitra AI, a helpful photo assistant. Today is ${new Date().toISOString().split('T')[0]}.
 Labeled people in user collection: ${peopleList || 'none'}.
 Rules:
 1. Only call tools when explicitly required by the user's request.

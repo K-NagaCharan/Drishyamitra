@@ -51,7 +51,7 @@ export async function sendEmail({ recipient, subject, photos, zipUrl }) {
     let htmlBody = "";
     if (zipUrl) {
       htmlBody = `
-        <p>Here is the ZIP archive containing the shared photos you requested from your APES gallery:</p>
+        <p>Here is the ZIP archive containing the shared photos you requested from your Drishyamitra gallery:</p>
         <p style="margin-top: 15px; margin-bottom: 15px;">
           <a href="${zipUrl}" style="display: inline-block; padding: 10px 20px; background-color: #c8501a; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">Download ZIP Archive</a>
         </p>
@@ -71,7 +71,7 @@ export async function sendEmail({ recipient, subject, photos, zipUrl }) {
       }
 
       htmlBody = `
-        <p>Here are the shared photos you requested from your APES gallery:</p>
+        <p>Here are the shared photos you requested from your Drishyamitra gallery:</p>
         <ul style="padding-left: 20px; line-height: 1.6;">
           ${photoLinks}
         </ul>
@@ -79,7 +79,7 @@ export async function sendEmail({ recipient, subject, photos, zipUrl }) {
     }
 
     const mailOptions = {
-      from: `"APES Photo Ingestor" <${env.GMAIL_USER}>`,
+      from: `"Drishyamitra Photo Ingestor" <${env.GMAIL_USER}>`,
       to: recipient,
       subject: subject,
       html: `
@@ -88,7 +88,7 @@ export async function sendEmail({ recipient, subject, photos, zipUrl }) {
           ${htmlBody}
           <br/>
           <p style="font-size: 11px; color: #6b6760; border-top: 1px solid #e8e4dc; padding-top: 10px; margin-top: 20px;">
-            This is an automated notification from APES (Agentic Photos Evaluation & Segregation).
+            This is an automated notification from Drishyamitra (Agentic Photos Evaluation & Segregation).
           </p>
         </div>
       `
