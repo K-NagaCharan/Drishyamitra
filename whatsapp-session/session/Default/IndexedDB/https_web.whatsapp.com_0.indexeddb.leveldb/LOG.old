@@ -1,0 +1,5 @@
+2026/06/10-14:32:52.145 4690 Reusing MANIFEST D:\APES\whatsapp-session\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2026/06/10-14:32:52.145 4690 Recovering log #34
+2026/06/10-14:32:52.173 4690 Reusing old log D:\APES\whatsapp-session\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000034.log 
+2026/06/10-14:32:52.174 4690 Delete type=2 #32
+2026/06/10-14:32:52.174 4690 Delete type=2 #33
